@@ -1,106 +1,133 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Giải đấu Tennis CD9</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    h2 { color: #333; }
-    table { border-collapse: collapse; width: 100%; margin-bottom: 30px; }
-    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
-    th { background: #4CAF50; color: white;}
-  </style>
+<meta charset="UTF-8">
+<title>Giải Đấu Tennis CD9</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body { font-family: Arial, sans-serif; padding:0; margin:0; background:#fafafa; }
+.container { max-width: 1000px; margin:auto; padding: 10px; }
+h2 { text-align:center; color:#222; margin-top:20px; }
+
+/* bảng */
+table { width:100%; border-collapse:collapse; margin-bottom:20px; }
+th,td { border:1px solid #ccc; padding:8px; }
+th { background:#4caf50; color:#fff; font-size:16px; }
+td { font-size:14px; text-align:center; }
+
+/* responsive */
+@media only screen and (max-width:600px) {
+  table,thead,tbody,th,td,tr{display:block;}
+  th { background:#4caf50; color:#fff; text-align:left; }
+  td { text-align:right; padding-left:50%; position:relative; }
+  td:before { position:absolute; left:10px; width:45%; white-space:nowrap; content:attr(data-label); font-weight:bold; }
+}
+</style>
 </head>
+
 <body>
+<div class="container">
 
-<h1>🏆 Giải đấu Tennis CD9</h1>
+  <h2>🏆 BẢNG XẾP HẠNG</h2>
+  <table id="tbl-bxh"></table>
 
-<h2>Bảng xếp hạng</h2>
-<table id="table-bxh"></table>
+  <h2>📋 CHI TIẾT TỪNG TRẬN ĐẤU</h2>
+  <table id="tbl-matches"></table>
 
-<h2>Chi tiết kết quả từng trận đấu</h2>
-<table id="table-matches"></table>
+  <h2>🔍 TRA CỨU THEO ĐỘI</h2>
+  <select id="team-select" onchange="renderTeamResult()">
+    <option value="">-- Chọn đội --</option>
+  </select>
+  <table id="tbl-team"></table>
 
-<h2>Tra cứu theo đội</h2>
-<select id="team-select"></select>
-<table id="table-lookup"></table>
+  <h2>👥 DANH SÁCH ĐỘI</h2>
+  <table id="tbl-teams"></table>
 
-<h2>Thông tin các cặp đấu</h2>
-<table id="table-pairs"></table>
+  <h2>📊 THÔNG TIN CÁC CẶP ĐẤU</h2>
+  <table id="tbl-pairs"></table>
 
-<h2>Danh sách đội & VĐV</h2>
-<table id="table-teams"></table>
+</div>
 
 <script>
-  const sheetID = "1pak2Yy4rZ3U50rYj2rlfCOkqyDDpnOns";
+const sheetID = "1pak2Yy4rZ3U50rYj2rlfCOkqyDDpnOns";
 
-  function fetchSheet(sheetName, callback) {
-    const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?sheet=${sheetName}`;
-    fetch(url)
-      .then(res => res.text())
-      .then(rep => {
-        const json = JSON.parse(rep.substring(rep.indexOf("{"), rep.lastIndexOf("}") + 1));
-        callback(json.table.rows);
-      });
-  }
+// helper fetch
+function fetchRange(range) {
+  const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?range=${range}`;
+  return fetch(url)
+    .then(res => res.text())
+    .then(txt => JSON.parse(txt.substring(txt.indexOf("{"), txt.lastIndexOf("}") + 1)))
+    .then(obj => obj.table.rows);
+}
 
-  function renderTable(rows, elementId) {
-    let html = "<tr>";
-    rows[0].c.forEach(c => html += `<th>${c && c.v ? c.v : ""}</th>`);
+// render table from rows
+function renderTable(rows, columns, elementId) {
+  let html = "<tr>";
+  columns.forEach(c => html += `<th>${c}</th>`);
+  html += "</tr>";
+  rows.forEach(r => {
+    html += "<tr>";
+    columns.forEach((col,i) => {
+      const value = r.c[i] ? r.c[i].v : "";
+      html += `<td data-label="${col}">${value}</td>`;
+    });
     html += "</tr>";
-
-    for (let i = 1; i < rows.length; i++) {
-      html += "<tr>";
-      rows[i].c.forEach(c => html += `<td>${c && c.v ? c.v : ""}</td>`);
-      html += "</tr>";
-    }
-
-    document.getElementById(elementId).innerHTML = html;
-  }
-
-  // 1. Bảng xếp hạng
-  fetchSheet("BXH", rows => renderTable(rows, "table-bxh"));
-
-  // 2. Chi tiết trận đấu
-  fetchSheet("MATCHES", rows => renderTable(rows, "table-matches"));
-
-  // 3. Danh sách đội
-  fetchSheet("TEAMS", rows => renderTable(rows, "table-teams"));
-
-  // 4. Ma trận cặp đấu
-  fetchSheet("PAIRS", rows => renderTable(rows, "table-pairs"));
-
-  // 5. Tra cứu theo đội
-  fetchSheet("MATCHES", rows => {
-    const teams = {};
-    rows.forEach(r => {
-      if (r.c[1] && r.c[1].v) teams[r.c[1].v] = true;
-      if (r.c[3] && r.c[3].v) teams[r.c[3].v] = true;
-    });
-
-    const select = document.getElementById("team-select");
-    Object.keys(teams).forEach(t => {
-      const option = document.createElement("option");
-      option.value = t;
-      option.text = t;
-      select.add(option);
-    });
-
-    select.onchange = () => {
-      let html = "<tr><th>Ngày</th><th>Đội 1</th><th>Tỷ số</th><th>Đội 2</th></tr>";
-      rows.forEach(r => {
-        if (r.c[1] && r.c[1].v === select.value || r.c[3] && r.c[3].v === select.value) {
-          html += "<tr>";
-          html += `<td>${r.c[0] && r.c[0].v ? r.c[0].v : ""}</td>`;
-          html += `<td>${r.c[1] && r.c[1].v ? r.c[1].v : ""}</td>`;
-          html += `<td>${r.c[2] && r.c[2].v ? r.c[2].v : ""}</td>`;
-          html += `<td>${r.c[3] && r.c[3].v ? r.c[3].v : ""}</td>`;
-          html += "</tr>";
-        }
-      });
-      document.getElementById("table-lookup").innerHTML = html;
-    };
   });
+  document.getElementById(elementId).innerHTML = html;
+}
+
+// 1: BXH
+fetchRange("BXH!A1:H100")
+  .then(rows => renderTable(rows,
+    ["Hạng","Đội","Trận","Thắng","Hòa","Thua","Hiệu số","Điểm"], "tbl-bxh"));
+
+// 2: MATCHES
+fetchRange("MATCHES!A1:F100")
+  .then(rows => renderTable(rows,
+    ["Ngày","Tháng","Năm","Đội A","Tỷ số","Đội B"], "tbl-matches"));
+
+// 3: TEAMS + fill dropdown
+fetchRange("TEAMS!A1:C100")
+  .then(rows => {
+    renderTable(rows, ["Đội","Tên VĐV","CODE"], "tbl-teams");
+    const sel = document.getElementById("team-select");
+    rows.forEach(r => {
+      const code = r.c[2] ? r.c[2].v : "";
+      if(code) sel.innerHTML += `<option value="${code}">${code}</option>`;
+    });
+  });
+
+// 4: PAIRS
+fetchRange("PAIRS!A1:E50")
+  .then(rows => renderTable(rows,
+    ["","D1","D2","D3","D4"], "tbl-pairs"));
+
+// store all matches for filter
+let allMatches = [];
+fetchRange("MATCHES!A1:F100").then(rows => allMatches = rows);
+
+// render team results
+function renderTeamResult() {
+  const team = document.getElementById("team-select").value;
+  if (!team) {
+    document.getElementById("tbl-team").innerHTML = "";
+    return;
+  }
+  const filtered = allMatches.filter(r => {
+    const A = r.c[3] ? r.c[3].v : "";
+    const B = r.c[5] ? r.c[5].v : "";
+    return A === team || B === team;
+  });
+
+  let html = "<tr><th>Ngày</th><th>Đội A</th><th>Tỷ số</th><th>Đội B</th></tr>";
+  filtered.forEach(r => {
+    const date = `${r.c[0].v}-${r.c[1].v}-${r.c[2].v}`;
+    const score = r.c[4] ? r.c[4].v : "";
+    html += `<tr><td>${date}</td><td>${r.c[3].v}</td><td>${score}</td><td>${r.c[5].v}</td></tr>`;
+  });
+  document.getElementById("tbl-team").innerHTML = html;
+}
 </script>
 
 </body>
