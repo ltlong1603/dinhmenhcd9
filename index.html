@@ -1,132 +1,176 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-<meta charset="UTF-8">
-<title>Giải Đấu Tennis CD9</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tennis CD9 2026</title>
 
 <style>
-body { font-family: Arial, sans-serif; padding:0; margin:0; background:#fafafa; }
-.container { max-width: 1000px; margin:auto; padding: 10px; }
-h2 { text-align:center; color:#222; margin-top:20px; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  margin: 0;
+  background: #f4f6f8;
+}
 
-/* bảng */
-table { width:100%; border-collapse:collapse; margin-bottom:20px; }
-th,td { border:1px solid #ccc; padding:8px; }
-th { background:#4caf50; color:#fff; font-size:16px; }
-td { font-size:14px; text-align:center; }
+header {
+  background: #000;
+  color: #fff;
+  padding: 14px;
+  text-align: center;
+  font-weight: bold;
+}
 
-/* responsive */
-@media only screen and (max-width:600px) {
-  table,thead,tbody,th,td,tr{display:block;}
-  th { background:#4caf50; color:#fff; text-align:left; }
-  td { text-align:right; padding-left:50%; position:relative; }
-  td:before { position:absolute; left:10px; width:45%; white-space:nowrap; content:attr(data-label); font-weight:bold; }
+nav {
+  display: flex;
+  overflow-x: auto;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+}
+
+nav button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  background: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+nav button.active {
+  background: #000;
+  color: #fff;
+}
+
+section {
+  display: none;
+  padding: 12px;
+}
+
+section.active {
+  display: block;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  font-size: 14px;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 6px;
+  text-align: center;
+}
+
+th {
+  background: #eee;
+}
+
+select {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  margin-bottom: 10px;
 }
 </style>
 </head>
 
 <body>
-<div class="container">
 
-  <h2>🏆 BẢNG XẾP HẠNG</h2>
-  <table id="tbl-bxh"></table>
+<header>TENNIS CD9 2026</header>
 
-  <h2>📋 CHI TIẾT TỪNG TRẬN ĐẤU</h2>
-  <table id="tbl-matches"></table>
+<nav>
+  <button class="active" onclick="showTab('BXH')">BXH</button>
+  <button onclick="showTab('MATCHES')">MATCHES</button>
+  <button onclick="showTab('TEAMS')">TEAMS</button>
+  <button onclick="showTab('PAIRS')">PAIRS</button>
+  <button onclick="showTab('CHECK')">CHECK</button>
+</nav>
 
-  <h2>🔍 TRA CỨU THEO ĐỘI</h2>
-  <select id="team-select" onchange="renderTeamResult()">
-    <option value="">-- Chọn đội --</option>
-  </select>
-  <table id="tbl-team"></table>
+<section id="BXH" class="active"></section>
+<section id="MATCHES"></section>
+<section id="TEAMS"></section>
+<section id="PAIRS"></section>
 
-  <h2>👥 DANH SÁCH ĐỘI</h2>
-  <table id="tbl-teams"></table>
-
-  <h2>📊 THÔNG TIN CÁC CẶP ĐẤU</h2>
-  <table id="tbl-pairs"></table>
-
-</div>
+<section id="CHECK">
+  <select id="teamSelect"></select>
+  <div id="checkResult"></div>
+</section>
 
 <script>
-const sheetID = "1pak2Yy4rZ3U50rYj2rlfCOkqyDDpnOns";
+const SHEET_ID = "1pak2Yy4rZ3U50rYj2rlfCOkqyDDpnOns";
 
-// helper fetch
-function fetchRange(range) {
-  const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?range=${range}`;
-  return fetch(url)
-    .then(res => res.text())
-    .then(txt => JSON.parse(txt.substring(txt.indexOf("{"), txt.lastIndexOf("}") + 1)))
-    .then(obj => obj.table.rows);
+function csvUrl(sheet) {
+  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${sheet}`;
 }
 
-// render table from rows
-function renderTable(rows, columns, elementId) {
-  let html = "<tr>";
-  columns.forEach(c => html += `<th>${c}</th>`);
-  html += "</tr>";
-  rows.forEach(r => {
+function showTab(id) {
+  document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
+  document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
+  document.querySelector(`nav button[onclick*='${id}']`).classList.add("active");
+  document.getElementById(id).classList.add("active");
+}
+
+async function loadSheet(sheet, container) {
+  const res = await fetch(csvUrl(sheet));
+  const text = await res.text();
+  const rows = text.trim().split("\n").map(r => r.split(","));
+  
+  let html = "<table><thead><tr>";
+  rows[0].forEach(c => html += `<th>${c}</th>`);
+  html += "</tr></thead><tbody>";
+
+  rows.slice(1).forEach(r => {
     html += "<tr>";
-    columns.forEach((col,i) => {
-      const value = r.c[i] ? r.c[i].v : "";
-      html += `<td data-label="${col}">${value}</td>`;
-    });
+    r.forEach(c => html += `<td>${c}</td>`);
     html += "</tr>";
   });
-  document.getElementById(elementId).innerHTML = html;
+
+  html += "</tbody></table>";
+  container.innerHTML = html;
+  return rows;
 }
 
-// 1: BXH
-fetchRange("BXH!A1:H100")
-  .then(rows => renderTable(rows,
-    ["Hạng","Đội","Trận","Thắng","Hòa","Thua","Hiệu số","Điểm"], "tbl-bxh"));
+// Load all main sheets
+loadSheet("BXH", document.getElementById("BXH"));
+loadSheet("MATCHES", document.getElementById("MATCHES"));
+loadSheet("TEAMS", document.getElementById("TEAMS"));
+loadSheet("PAIRS", document.getElementById("PAIRS"));
 
-// 2: MATCHES
-fetchRange("MATCHES!A1:F100")
-  .then(rows => renderTable(rows,
-    ["Ngày","Tháng","Năm","Đội A","Tỷ số","Đội B"], "tbl-matches"));
+// CHECK logic
+let matchData = [];
 
-// 3: TEAMS + fill dropdown
-fetchRange("TEAMS!A1:C100")
-  .then(rows => {
-    renderTable(rows, ["Đội","Tên VĐV","CODE"], "tbl-teams");
-    const sel = document.getElementById("team-select");
-    rows.forEach(r => {
-      const code = r.c[2] ? r.c[2].v : "";
-      if(code) sel.innerHTML += `<option value="${code}">${code}</option>`;
+(async () => {
+  matchData = await loadSheet("MATCHES", document.createElement("div"));
+  const teams = [...new Set(matchData.slice(1).flat())].filter(t => t.startsWith("D"));
+  const select = document.getElementById("teamSelect");
+  teams.forEach(t => {
+    const o = document.createElement("option");
+    o.value = t;
+    o.textContent = t;
+    select.appendChild(o);
+  });
+
+  select.onchange = () => renderCheck(select.value);
+  renderCheck(select.value);
+})();
+
+function renderCheck(team) {
+  let html = "<table><tr>";
+  matchData[0].forEach(h => html += `<th>${h}</th>`);
+  html += "</tr>";
+
+  matchData.slice(1)
+    .filter(r => r.includes(team))
+    .forEach(r => {
+      html += "<tr>";
+      r.forEach(c => html += `<td>${c}</td>`);
+      html += "</tr>";
     });
-  });
 
-// 4: PAIRS
-fetchRange("PAIRS!A1:E50")
-  .then(rows => renderTable(rows,
-    ["","D1","D2","D3","D4"], "tbl-pairs"));
-
-// store all matches for filter
-let allMatches = [];
-fetchRange("MATCHES!A1:F100").then(rows => allMatches = rows);
-
-// render team results
-function renderTeamResult() {
-  const team = document.getElementById("team-select").value;
-  if (!team) {
-    document.getElementById("tbl-team").innerHTML = "";
-    return;
-  }
-  const filtered = allMatches.filter(r => {
-    const A = r.c[3] ? r.c[3].v : "";
-    const B = r.c[5] ? r.c[5].v : "";
-    return A === team || B === team;
-  });
-
-  let html = "<tr><th>Ngày</th><th>Đội A</th><th>Tỷ số</th><th>Đội B</th></tr>";
-  filtered.forEach(r => {
-    const date = `${r.c[0].v}-${r.c[1].v}-${r.c[2].v}`;
-    const score = r.c[4] ? r.c[4].v : "";
-    html += `<tr><td>${date}</td><td>${r.c[3].v}</td><td>${score}</td><td>${r.c[5].v}</td></tr>`;
-  });
-  document.getElementById("tbl-team").innerHTML = html;
+  html += "</table>";
+  document.getElementById("checkResult").innerHTML = html;
 }
 </script>
 
