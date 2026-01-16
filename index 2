@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TENNIS ĐỊNH MỆNH CD9 2026</title>
+
+<style>
+*{box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
+body{margin:0;background:#f2f2f2}
+header{background:#000;color:#fff;text-align:center;padding:16px;font-size:20px;font-weight:bold}
+
+nav{display:flex;background:#000}
+nav button{
+  flex:1;padding:14px;border:none;
+  background:#000;color:#fff;
+  font-weight:bold;cursor:pointer
+}
+nav button.active{background:#fff;color:#000}
+
+section{display:none;padding:20px}
+section.active{display:block}
+
+.title-bar{
+  background:#000;color:#ff0;
+  text-align:center;
+  font-weight:bold;
+  padding:10px;
+  margin-bottom:10px
+}
+
+.table-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;background:#fff}
+th,td{
+  border:1px solid #ccc;
+  padding:8px;
+  text-align:center;
+  white-space:nowrap
+}
+th{background:#eaeaea}
+
+.red{background:#ffcccc;color:#a40000;font-weight:bold}
+.yellow{background:#ffe699;color:#7a4a00;font-weight:bold}
+.green{background:#c6efce;color:#006100;font-weight:bold}
+</style>
+</head>
+
+<body>
+
+<header>TENNIS ĐỊNH MỆNH CD9 2026</header>
+
+<nav>
+  <button class="active" onclick="showTab('bxh',this)">BXH</button>
+  <button onclick="showTab('matches',this)">MATCHES</button>
+  <button onclick="showTab('teams',this)">TEAMS</button>
+  <button onclick="showTab('pairs',this)">PAIRS</button>
+  <button onclick="showTab('check',this)">CHECK</button>
+</nav>
+
+<section id="bxh" class="active">
+  <div class="title-bar">BẢNG XẾP HẠNG</div>
+  <div class="table-wrap"><table id="bxhTable"></table></div>
+</section>
+
+<section id="matches">
+  <div class="title-bar">CHI TIẾT KẾT QUẢ TỪNG TRẬN</div>
+  <div class="table-wrap"><table id="matchesTable"></table></div>
+</section>
+
+<section id="teams">
+  <div class="title-bar">DANH SÁCH ĐỘI TUYỂN</div>
+  <div class="table-wrap"><table id="teamsTable"></table></div>
+</section>
+
+<section id="pairs">
+  <div class="title-bar">THÔNG TIN CÁC CẶP ĐẤU</div>
+  <div class="table-wrap"><table id="pairsTable"></table></div>
+</section>
+
+<section id="check">
+  <div class="title-bar">CHECK CẶP ĐẤU</div>
+  <div class="table-wrap"><table id="checkTable"></table></div>
+</section>
+
+<script>
+const SHEET_ID = "1pak2Yy4rZ3U50rYj2rlfCOkqyDDpnOns";
+
+/* GID ĐÚNG THEO FILE CỦA MÀY */
+const GID = {
+  bxh: "0",
+  matches: "1494947385",
+  teams: "1896492975",
+  pairs: "3",
+  check: "4"
+};
+
+function showTab(id,btn){
+  document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
+  document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  btn.classList.add("active");
+}
+
+function csvURL(gid){
+  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}`;
+}
+
+function parseCSV(text){
+  return text
+    .trim()
+    .split("\n")
+    .map(r=>r.split(",").map(c=>c.replace(/^"|"$/g,"")));
+}
+
+function render(tableId,data,isCheck=false){
+  const table=document.getElementById(tableId);
+  table.innerHTML="";
+  data.forEach((row,i)=>{
+    const tr=document.createElement("tr");
+    row.forEach(cell=>{
+      const el=document.createElement(i===0?"th":"td");
+      el.textContent=cell;
+
+      if(isCheck && i>0){
+        if(cell==="Chưa đấu") el.className="red";
+        else if(cell.includes("Thiếu")) el.className="yellow";
+        else if(cell.includes("Đủ")) el.className="green";
+      }
+
+      tr.appendChild(el);
+    });
+    table.appendChild(tr);
+  });
+}
+
+async function load(gid,tableId,isCheck=false){
+  const res=await fetch(csvURL(gid));
+  const text=await res.text();
+
+  /* chặn lỗi HTML */
+  if(text.startsWith("<!DOCTYPE")){
+    document.getElementById(tableId).innerHTML=
+      "<tr><td>Lỗi GID Sheet</td></tr>";
+    return;
+  }
+
+  const data=parseCSV(text);
+  render(tableId,data,isCheck);
+}
+
+load(GID.bxh,"bxhTable");
+load(GID.matches,"matchesTable");
+load(GID.teams,"teamsTable");
+load(GID.pairs,"pairsTable");
+load(GID.check,"checkTable",true);
+</script>
+
+</body>
+</html>
