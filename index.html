@@ -1,84 +1,88 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Tennis CD9 2026</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TENNIS CD9 2026</title>
 
 <style>
-body {
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  margin: 0;
-  background: #f4f6f8;
+body{
+  margin:0;
+  font-family:Arial, Helvetica, sans-serif;
+  background:#f4f4f4;
 }
-
-header {
-  background: #000;
-  color: #fff;
-  padding: 14px;
-  text-align: center;
-  font-weight: bold;
+header{
+  background:#000;
+  color:#fff;
+  text-align:center;
+  padding:14px;
+  font-weight:bold;
+  letter-spacing:1px;
 }
-
-nav {
-  display: flex;
-  overflow-x: auto;
-  background: #fff;
-  border-bottom: 1px solid #ddd;
+nav{
+  display:flex;
+  background:#111;
 }
-
-nav button {
-  flex: 1;
-  padding: 12px;
-  border: none;
-  background: none;
-  font-weight: bold;
-  cursor: pointer;
+nav button{
+  flex:1;
+  padding:12px;
+  border:none;
+  background:#111;
+  color:#fff;
+  font-size:14px;
 }
-
-nav button.active {
-  background: #000;
-  color: #fff;
+nav button.active{
+  background:#fff;
+  color:#000;
+  font-weight:bold;
 }
-
-section {
-  display: none;
-  padding: 12px;
+section{
+  display:none;
+  padding:10px;
 }
-
-section.active {
-  display: block;
+section.active{
+  display:block;
 }
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: #fff;
-  font-size: 14px;
+h2{
+  text-align:center;
+  margin:10px 0;
 }
-
-th, td {
-  border: 1px solid #ddd;
-  padding: 6px;
-  text-align: center;
+.table-wrap{
+  overflow-x:auto;
 }
-
-th {
-  background: #eee;
+table{
+  width:100%;
+  border-collapse:collapse;
+  background:#fff;
 }
-
-select {
-  width: 100%;
-  padding: 8px;
-  font-size: 16px;
-  margin-bottom: 10px;
+th,td{
+  border:1px solid #ddd;
+  padding:8px;
+  text-align:center;
+  font-size:14px;
+}
+th{
+  background:#eaeaea;
+  font-weight:bold;
+}
+.green{background:#57b657;color:#fff;}
+.yellow{background:#fff59d;}
+.blue{background:#4dd0e1;}
+.result-win{color:green;font-weight:bold;}
+.result-lose{color:red;font-weight:bold;}
+select{
+  padding:6px;
+  font-size:14px;
+}
+@media(max-width:600px){
+  th,td{font-size:12px;padding:6px;}
 }
 </style>
 </head>
 
 <body>
 
-<header>TENNIS CD9 2026</header>
+<header>TENNIS ĐỊNH MỆNH CD9 2026</header>
 
 <nav>
   <button class="active" onclick="showTab('BXH')">BXH</button>
@@ -88,90 +92,96 @@ select {
   <button onclick="showTab('CHECK')">CHECK</button>
 </nav>
 
-<section id="BXH" class="active"></section>
-<section id="MATCHES"></section>
-<section id="TEAMS"></section>
-<section id="PAIRS"></section>
+<section id="BXH" class="active">
+  <h2>🏆 BẢNG XẾP HẠNG</h2>
+  <div class="table-wrap"><table id="bxh"></table></div>
+</section>
+
+<section id="MATCHES">
+  <h2>CHI TIẾT KẾT QUẢ TỪNG TRẬN</h2>
+  <div class="table-wrap"><table id="matches"></table></div>
+</section>
+
+<section id="TEAMS">
+  <h2>DANH SÁCH ĐỘI</h2>
+  <div class="table-wrap"><table id="teams"></table></div>
+</section>
+
+<section id="PAIRS">
+  <h2>DANH SÁCH CẶP ĐẤU</h2>
+  <div class="table-wrap"><table id="pairs"></table></div>
+</section>
 
 <section id="CHECK">
+  <h2>TRA CỨU THEO ĐỘI</h2>
   <select id="teamSelect"></select>
-  <div id="checkResult"></div>
+  <div class="table-wrap"><table id="check"></table></div>
 </section>
 
 <script>
 const SHEET_ID = "1pak2Yy4rZ3U50rYj2rlfCOkqyDDpnOns";
 
-function csvUrl(sheet) {
+const sheets = {
+  BXH: "BXH",
+  MATCHES: "MATCHES",
+  TEAMS: "TEAMS",
+  PAIRS: "PAIRS",
+  CHECK: "CHECK"
+};
+
+function csvURL(sheet){
   return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${sheet}`;
 }
 
-function showTab(id) {
-  document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
-  document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
-  document.querySelector(`nav button[onclick*='${id}']`).classList.add("active");
+function loadTable(sheet, tableId){
+  fetch(csvURL(sheet))
+  .then(r=>r.text())
+  .then(t=>{
+    const rows=t.trim().split("\n").map(r=>r.split(",").map(c=>c.replace(/\"/g,"")));
+    let html="<tr>"+rows[0].map(h=>`<th>${h}</th>`).join("")+"</tr>";
+    rows.slice(1).forEach(r=>{
+      html+="<tr>"+r.map(c=>`<td>${c}</td>`).join("")+"</tr>";
+    });
+    document.getElementById(tableId).innerHTML=html;
+  });
+}
+
+function showTab(id){
+  document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+  event.target.classList.add("active");
+  document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
   document.getElementById(id).classList.add("active");
 }
 
-async function loadSheet(sheet, container) {
-  const res = await fetch(csvUrl(sheet));
-  const text = await res.text();
-  const rows = text.trim().split("\n").map(r => r.split(","));
-  
-  let html = "<table><thead><tr>";
-  rows[0].forEach(c => html += `<th>${c}</th>`);
-  html += "</tr></thead><tbody>";
+loadTable("BXH","bxh");
+loadTable("MATCHES","matches");
+loadTable("TEAMS","teams");
+loadTable("PAIRS","pairs");
 
-  rows.slice(1).forEach(r => {
-    html += "<tr>";
-    r.forEach(c => html += `<td>${c}</td>`);
-    html += "</tr>";
+fetch(csvURL("TEAMS"))
+.then(r=>r.text())
+.then(t=>{
+  const rows=t.trim().split("\n").slice(1);
+  const sel=document.getElementById("teamSelect");
+  rows.forEach(r=>{
+    const v=r.replace(/\"/g,"").split(",")[0];
+    sel.innerHTML+=`<option>${v}</option>`;
   });
+});
 
-  html += "</tbody></table>";
-  container.innerHTML = html;
-  return rows;
-}
-
-// Load all main sheets
-loadSheet("BXH", document.getElementById("BXH"));
-loadSheet("MATCHES", document.getElementById("MATCHES"));
-loadSheet("TEAMS", document.getElementById("TEAMS"));
-loadSheet("PAIRS", document.getElementById("PAIRS"));
-
-// CHECK logic
-let matchData = [];
-
-(async () => {
-  matchData = await loadSheet("MATCHES", document.createElement("div"));
-  const teams = [...new Set(matchData.slice(1).flat())].filter(t => t.startsWith("D"));
-  const select = document.getElementById("teamSelect");
-  teams.forEach(t => {
-    const o = document.createElement("option");
-    o.value = t;
-    o.textContent = t;
-    select.appendChild(o);
-  });
-
-  select.onchange = () => renderCheck(select.value);
-  renderCheck(select.value);
-})();
-
-function renderCheck(team) {
-  let html = "<table><tr>";
-  matchData[0].forEach(h => html += `<th>${h}</th>`);
-  html += "</tr>";
-
-  matchData.slice(1)
-    .filter(r => r.includes(team))
-    .forEach(r => {
-      html += "<tr>";
-      r.forEach(c => html += `<td>${c}</td>`);
-      html += "</tr>";
+document.getElementById("teamSelect").addEventListener("change",e=>{
+  const team=e.target.value;
+  fetch(csvURL("MATCHES"))
+  .then(r=>r.text())
+  .then(t=>{
+    const rows=t.trim().split("\n").map(r=>r.replace(/\"/g,"").split(","));
+    let html="<tr>"+rows[0].map(h=>`<th>${h}</th>`).join("")+"</tr>";
+    rows.slice(1).filter(r=>r.includes(team)).forEach(r=>{
+      html+="<tr>"+r.map(c=>`<td>${c}</td>`).join("")+"</tr>";
     });
-
-  html += "</table>";
-  document.getElementById("checkResult").innerHTML = html;
-}
+    document.getElementById("check").innerHTML=html;
+  });
+});
 </script>
 
 </body>
