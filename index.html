@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Giải Đấu Của Tao</title>
+<style>
+  body { font-family: Arial, sans-serif; background:#f8f8f8; margin:0; padding:0; }
+  .container { max-width:1000px; margin:auto; padding:20px;}
+  h1 { text-align:center; color:#222; }
+  table { width:100%; border-collapse: collapse; margin:20px 0; }
+  th,td { border:1px solid #ccc; padding:8px; text-align:center; }
+  th { background:#4CAF50; color:white; }
+  tr:nth-child(even){background:#f2f2f2}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🏆 Bảng Xếp Hạng Giải Đấu</h1>
+  <table id="bangXepHang">
+    <thead>
+      <tr>
+        <th>Hạng</th>
+        <th>Đội</th>
+        <th>Trận</th>
+        <th>Thắng</th>
+        <th>Hòa</th>
+        <th>Thua</th>
+        <th>Hiệu số</th>
+        <th>Điểm</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<script>
+const sheetID = "1pak2Yy4rZ3U50rYj2rlfCOkqyDDpnOns";
+const sheetName = "BangXepHang"; // đổi nếu sheet tên khác
+
+const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?sheet=${sheetName}`;
+
+fetch(url)
+  .then(res => res.text())
+  .then(rep => {
+    const data = JSON.parse(rep.substring(rep.indexOf("{"), rep.lastIndexOf("}") + 1));
+    const rows = data.table.rows;
+    const tbody = document.querySelector("#bangXepHang tbody");
+    tbody.innerHTML = "";
+
+    rows.forEach(r => {
+      const cells = r.c.map(c => c ? c.v : "");
+      tbody.innerHTML += `
+        <tr>
+          <td>${cells[0]}</td>
+          <td>${cells[2]}</td>
+          <td>${cells[3]}</td>
+          <td>${cells[4]}</td>
+          <td>${cells[5]}</td>
+          <td>${cells[6]}</td>
+          <td>${cells[7]}</td>
+          <td>${cells[8]}</td>
+        </tr>
+      `;
+    });
+  })
+  .catch(err => console.error("Error:", err));
+</script>
+
+</body>
+</html>
