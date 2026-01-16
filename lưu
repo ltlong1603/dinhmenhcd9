@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<title>TENNIS CD9 2026</title>
+<style>
+body{
+  margin:0;
+  font-family: Arial, Helvetica, sans-serif;
+  background:#f5f5f5;
+}
+header{
+  background:#000;
+  color:#fff;
+  text-align:center;
+  padding:14px;
+  font-weight:bold;
+  font-size:20px;
+}
+nav{
+  display:flex;
+  background:#000;
+}
+nav button{
+  flex:1;
+  padding:12px;
+  border:none;
+  background:#000;
+  color:#fff;
+  cursor:pointer;
+  font-weight:bold;
+}
+nav button.active{
+  background:#fff;
+  color:#000;
+}
+section{
+  display:none;
+  padding:20px;
+}
+section.active{
+  display:block;
+}
+table{
+  border-collapse:collapse;
+  width:100%;
+  background:#fff;
+}
+th,td{
+  border:1px solid #ccc;
+  padding:6px;
+  text-align:center;
+}
+th{
+  background:#eee;
+  font-weight:bold;
+}
+.title{
+  background:#000;
+  color:#ffe600;
+  font-weight:bold;
+  text-align:center;
+  padding:8px;
+  margin-bottom:10px;
+}
+.green{ background:#8bc34a; }
+.yellow{ background:#fff59d; }
+.orange{ background:#ffc107; }
+.blue{ background:#00e5ff; }
+.gray{ background:#b0bec5; }
+
+.win{ background:#4caf50; }
+.draw{ background:#ffffff; }
+.lose{ background:#f44336; }
+
+.select-box{
+  margin-bottom:10px;
+}
+</style>
+</head>
+<body>
+
+<header>TENNIS CD9 2026</header>
+
+<nav>
+  <button class="active" onclick="showTab('bxh')">BXH</button>
+  <button onclick="showTab('matches')">MATCHES</button>
+  <button onclick="showTab('teams')">TEAMS</button>
+  <button onclick="showTab('pairs')">PAIRS</button>
+  <button onclick="showTab('check')">CHECK</button>
+</nav>
+
+<!-- BXH -->
+<section id="bxh" class="active">
+  <div class="title">KẾT QUẢ XẾP HẠNG CÁC ĐỘI</div>
+  <table>
+    <tr>
+      <th>STT</th><th>Đội</th><th>Trận</th><th>Thắng</th><th>Hòa</th><th>Thua</th><th>Hiệu số</th><th>Điểm</th>
+    </tr>
+    <tr><td>1</td><td>D2</td><td>1</td><td>1</td><td>0</td><td>0</td><td>+5</td><td>3</td></tr>
+    <tr><td>2</td><td>D1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+    <tr><td>3</td><td>D4</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+    <tr><td>4</td><td>D3</td><td>1</td><td>0</td><td>0</td><td>1</td><td>-5</td><td>0</td></tr>
+  </table>
+</section>
+
+<!-- MATCHES -->
+<section id="matches">
+  <div class="title">CHI TIẾT KẾT QUẢ TỪNG TRẬN ĐẤU</div>
+  <table id="matchesTable">
+    <tr>
+      <th colspan="3" class="green">NGÀY THÁNG NĂM</th>
+      <th colspan="4" class="green">DANH SÁCH CÁC CẶP ĐẤU</th>
+    </tr>
+    <tr>
+      <th>Ngày</th><th>Tháng</th><th>Năm</th>
+      <th class="green">Sân Ngon</th>
+      <th colspan="2" class="yellow">Tỷ số</th>
+      <th class="orange">Sân Mù Mắt</th>
+    </tr>
+    <tr>
+      <td class="gray">16</td><td class="gray">1</td><td>2025</td>
+      <td class="blue">D2</td>
+      <td class="yellow">6</td>
+      <td class="yellow">1</td>
+      <td class="blue">D3</td>
+    </tr>
+  </table>
+</section>
+
+<!-- TEAMS -->
+<section id="teams">
+  <div class="title">TEAMS</div>
+  <table>
+    <tr><th>Đội</th><th>Ghi chú</th></tr>
+    <tr><td>D1</td><td></td></tr>
+    <tr><td>D2</td><td></td></tr>
+    <tr><td>D3</td><td></td></tr>
+    <tr><td>D4</td><td></td></tr>
+  </table>
+</section>
+
+<!-- PAIRS -->
+<section id="pairs">
+  <div class="title">PAIRS</div>
+  <table>
+    <tr><th>Cặp đấu</th><th>Đội</th></tr>
+  </table>
+</section>
+
+<!-- CHECK -->
+<section id="check">
+  <div class="title">TRA CỨU THỐNG KÊ KẾT QUẢ TỪNG ĐỘI</div>
+
+  <div class="select-box">
+    ĐỘI:
+    <select id="teamSelect">
+      <option value="D1">D1</option>
+      <option value="D2" selected>D2</option>
+      <option value="D3">D3</option>
+      <option value="D4">D4</option>
+    </select>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th colspan="3" class="green">NGÀY THÁNG NĂM</th>
+        <th colspan="4" class="green">DANH SÁCH CÁC CẶP ĐẤU</th>
+        <th>Kết quả</th>
+      </tr>
+      <tr>
+        <th>Ngày</th><th>Tháng</th><th>Năm</th>
+        <th class="green">Sân Ngon</th>
+        <th colspan="2" class="yellow">Tỷ số</th>
+        <th class="orange">Sân Mù Mắt</th>
+        <th>Kết quả</th>
+      </tr>
+    </thead>
+    <tbody id="checkBody"></tbody>
+  </table>
+</section>
+
+<script>
+const matches = [
+  {day:16, month:1, year:2025, home:"D2", hs:6, as:1, away:"D3"}
+];
+
+function showTab(id){
+  document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
+  document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  event.target.classList.add("active");
+}
+
+function getResult(m, team){
+  if(m.home===team){
+    if(m.hs>m.as) return "Thắng";
+    if(m.hs<m.as) return "Thua";
+    return "Hòa";
+  }
+  if(m.away===team){
+    if(m.as>m.hs) return "Thắng";
+    if(m.as<m.hs) return "Thua";
+    return "Hòa";
+  }
+}
+
+function renderCheck(){
+  const team=document.getElementById("teamSelect").value;
+  const body=document.getElementById("checkBody");
+  body.innerHTML="";
+  matches.filter(m=>m.home===team||m.away===team).forEach(m=>{
+    const r=getResult(m,team);
+    const cls=r==="Thắng"?"win":r==="Thua"?"lose":"draw";
+    body.innerHTML+=`
+      <tr>
+        <td class="gray">${m.day}</td>
+        <td class="gray">${m.month}</td>
+        <td>${m.year}</td>
+        <td class="blue">${m.home}</td>
+        <td class="yellow">${m.hs}</td>
+        <td class="yellow">${m.as}</td>
+        <td class="blue">${m.away}</td>
+        <td class="${cls}">${r}</td>
+      </tr>`;
+  });
+}
+
+document.getElementById("teamSelect").addEventListener("change",renderCheck);
+renderCheck();
+</script>
+
+</body>
+</html>
