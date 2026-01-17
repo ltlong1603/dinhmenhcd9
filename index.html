@@ -25,28 +25,24 @@
         .section-title { background: var(--primary); color: white; padding: 10px; margin-top: 15px; font-weight: bold; text-transform: uppercase; text-align: center; font-size: 14px; position: sticky; top: 54px; z-index: 1000; }
         .container { padding: 5px; max-width: 100%; box-sizing: border-box; }
 
-        /* Ép bảng không được cuộn ngang */
         .table-wrapper { background: white; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); overflow: hidden; }
-        table { width: 100%; border-collapse: collapse; table-layout: fixed; } /* Cực kỳ quan trọng để ép chiều ngang */
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
         
         th, td { border: 1px solid #ccc; padding: 6px 2px; text-align: center; font-size: 12px; word-wrap: break-word; overflow: hidden; }
         th { background: #e8f5e9; font-weight: bold; }
         .head-col { background: #e8f5e9; font-weight: bold; }
 
-        /* Cấu hình cột riêng cho BXH để ưu tiên tên đội */
-        .bxh-table th:nth-child(1) { width: 8%; }  /* Stt */
-        .bxh-table th:nth-child(2) { width: 22%; } /* Đội */
+        .bxh-table th:nth-child(1) { width: 8%; }
+        .bxh-table th:nth-child(2) { width: 22%; }
         .bxh-table th:nth-child(3), .bxh-table th:nth-child(4), 
-        .bxh-table th:nth-child(5), .bxh-table th:nth-child(6) { width: 12.5%; } /* T, H, B */
-        .bxh-table th:nth-child(7), .bxh-table th:nth-child(8) { width: 15%; } /* HS, Điểm */
+        .bxh-table th:nth-child(5), .bxh-table th:nth-child(6) { width: 12.5%; }
+        .bxh-table th:nth-child(7), .bxh-table th:nth-child(8) { width: 15%; }
 
-        /* Màu sắc cho bảng Cặp đấu */
         .cell-full { background-color: var(--win-bg) !important; color: var(--win) !important; font-weight: bold; font-size: 10px !important; }
         .cell-none { background-color: var(--lose-bg) !important; color: var(--lose) !important; font-weight: bold; font-size: 10px !important; }
         .cell-missing { background-color: var(--warn-bg) !important; color: #a57d00 !important; font-weight: bold; font-size: 10px !important; }
         .cell-empty { background-color: #f0f0f0; }
 
-        /* Card Layout phần Check & Lịch thi đấu */
         .card-list { display: flex; flex-direction: column; gap: 8px; padding: 5px 0; }
         .match-card {
             background: white; border-radius: 10px; padding: 10px;
@@ -59,7 +55,6 @@
         .score-display { display: flex; align-items: center; gap: 3px; }
         .score-box { background: #000; color: var(--accent); width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 16px; font-weight: 900; }
 
-        /* Badge Kết quả Check */
         .result-badge { margin-top: 5px; padding: 3px 12px; border-radius: 12px; color: white; font-weight: 800; font-size: 10px; text-transform: uppercase; }
         .win-badge { background: var(--win); } .lose-badge { background: var(--lose); } .draw-badge { background: var(--draw); }
 
@@ -67,7 +62,6 @@
         .filter-btn { padding: 6px 12px; border: 1.5px solid var(--primary); background: white; color: var(--primary); font-weight: bold; border-radius: 20px; cursor: pointer; font-size: 11px; }
         .filter-btn.active { background: var(--primary); color: white; }
 
-        /* Responsive Mobile - Ép chữ nhỏ hơn nữa nếu màn hình siêu bé */
         @media (max-width: 380px) {
             th, td { font-size: 10px; padding: 4px 1px; }
             .cell-full, .cell-none, .cell-missing { font-size: 9px !important; }
@@ -80,26 +74,10 @@
 <header>TENNIS CD9 2026</header>
 
 <div class="container">
-    <section>
-        <div class="section-title">🏆 Bảng Xếp Hạng</div>
-        <div id="BXH" class="table-wrapper"></div>
-    </section>
-
-    <section>
-        <div class="section-title">🎾 Lịch Thi Đấu & Kết Quả</div>
-        <div id="MATCHES" class="card-list"></div>
-    </section>
-
-    <section>
-        <div class="section-title">🤝 Danh Sách Cặp Đấu</div>
-        <div id="PAIRS" class="table-wrapper"></div>
-    </section>
-
-    <section>
-        <div class="section-title">👥 Danh Sách Teams</div>
-        <div id="TEAMS" class="table-wrapper"></div>
-    </section>
-
+    <section><div class="section-title">🏆 Bảng Xếp Hạng</div><div id="BXH" class="table-wrapper"></div></section>
+    <section><div class="section-title">🎾 Lịch Thi Đấu & Kết Quả</div><div id="MATCHES" class="card-list"></div></section>
+    <section><div class="section-title">🤝 Danh Sách Cặp Đấu</div><div id="PAIRS" class="table-wrapper"></div></section>
+    <section><div class="section-title">👥 Danh Sách Teams</div><div id="TEAMS" class="table-wrapper"></div></section>
     <section>
         <div class="section-title">✅ Kiểm Tra Kết Quả</div>
         <div class="filter-container">
@@ -126,7 +104,13 @@ async function loadSheet(sheetName, targetId) {
         const rows = json.table.rows;
 
         if (sheetName === "MATCHES") {
+            // Lọc hàng trống và SẮP XẾP NGÀY GIẢM DẦN (Mới nhất lên đầu)
             allMatches = rows.filter(row => row.c && row.c.some(cell => cell && cell.v !== null));
+            allMatches.sort((a, b) => {
+                const dateA = new Date(a.c[2]?.v, a.c[1]?.v - 1, a.c[0]?.v);
+                const dateB = new Date(b.c[2]?.v, b.c[1]?.v - 1, b.c[0]?.v);
+                return dateB - dateA;
+            });
             renderCards(allMatches, "MATCHES", "ALL");
             renderCards(allMatches, "CHECK_RESULT", "ALL");
         } else if (sheetName === "PAIRS") {
@@ -143,12 +127,7 @@ function renderBXHTable(table, targetId) {
     let html = `<table class="bxh-table"><thead><tr>`;
     table.cols.forEach(col => html += `<th>${col.label || ""}</th>`);
     html += `</tr></thead><tbody>`;
-    table.rows.forEach(row => {
-        if (!row.c || !row.c[1]) return;
-        html += `<tr>`;
-        row.c.forEach(cell => html += `<td>${cell?.f || cell?.v || "0"}</td>`);
-        html += `</tr>`;
-    });
+    table.rows.forEach(row => { if (!row.c || !row.c[1]) return; html += `<tr>`; row.c.forEach(cell => html += `<td>${cell?.f || cell?.v || "0"}</td>`); html += `</tr>`; });
     document.getElementById(targetId).innerHTML = html + `</tbody></table>`;
 }
 
@@ -156,12 +135,7 @@ function renderStandardTable(table, targetId) {
     let html = `<table><thead><tr>`;
     table.cols.forEach(col => html += `<th>${col.label || ""}</th>`);
     html += `</tr></thead><tbody>`;
-    table.rows.forEach(row => {
-        if (!row.c || !row.c.some(c => c && c.v !== null)) return;
-        html += `<tr>`;
-        row.c.forEach(cell => html += `<td>${cell?.f || cell?.v || ""}</td>`);
-        html += `</tr>`;
-    });
+    table.rows.forEach(row => { if (!row.c || !row.c.some(c => c && c.v !== null)) return; html += `<tr>`; row.c.forEach(cell => html += `<td>${cell?.f || cell?.v || ""}</td>`); html += `</tr>`; });
     document.getElementById(targetId).innerHTML = html + `</tbody></table>`;
 }
 
@@ -170,8 +144,7 @@ function renderMatrixPairs(table, targetId) {
     table.rows.forEach((row, rIdx) => {
         html += `<tr>`;
         row.c.forEach((cell, cIdx) => {
-            let val = cell?.v || "";
-            let cls = "";
+            let val = cell?.v || ""; let cls = "";
             if (rIdx === 0 || cIdx === 0) cls = "head-col";
             else if (rIdx === cIdx) cls = "cell-empty";
             else if (val.includes("Đủ 2 lượt")) cls = "cell-full";
