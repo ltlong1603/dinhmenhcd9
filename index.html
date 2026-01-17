@@ -5,35 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>TENNIS CD9 2026</title>
     <style>
-        :root {
-            --primary: #1b5e20;
-            --accent: #ffff00;
-            --dark: #121212;
-            --bg: #f0f0f0;
-        }
-
+        :root { --primary: #1b5e20; --accent: #ffff00; --dark: #121212; --bg: #f0f0f0; }
         body { margin: 0; font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: #333; padding-bottom: 50px; }
         header { background: var(--dark); color: var(--accent); text-align: center; padding: 20px 0; font-size: 22px; font-weight: 900; text-transform: uppercase; border-bottom: 4px solid var(--primary); position: sticky; top: 0; z-index: 2000; }
-        
         .section-title { background: var(--primary); color: white; padding: 10px; margin-top: 20px; font-weight: bold; text-transform: uppercase; font-size: 16px; display: flex; align-items: center; justify-content: center; position: sticky; top: 68px; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         .container { padding: 10px; max-width: 100%; }
         .table-wrapper { background: white; margin-bottom: 10px; overflow-x: auto; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        
         table { width: 100%; border-collapse: collapse; table-layout: fixed; }
         th, td { border: 1px solid #ddd; padding: 10px 2px; text-align: center; vertical-align: middle; font-size: 13px; word-wrap: break-word; }
         th { background: #f8f9fa; color: #000; font-weight: bold; font-size: 11px; }
 
-        /* Style cho MATCHES & CHECK */
+        /* Styles cho bảng Matches/Check */
         .tbl-matches th:nth-child(1), .tbl-matches td:nth-child(1) { width: 30px; }
         .tbl-matches th:nth-child(2), .tbl-matches td:nth-child(2) { width: 30px; }
         .tbl-matches th:nth-child(3), .tbl-matches td:nth-child(3) { width: 45px; }
         .tbl-matches td:nth-child(5), .tbl-matches td:nth-child(6) { background: #fffde7 !important; font-weight: bold; color: #d32f2f; font-size: 15px; width: 32px; }
+        
+        /* Cột kết quả mới */
+        .res-win { background-color: #2e7d32 !important; color: white !important; font-weight: bold; }
+        .res-lose { background-color: #c62828 !important; color: white !important; font-weight: bold; }
+        .res-draw { background-color: #ffffff !important; color: #333 !important; font-weight: bold; }
 
-        /* Bộ lọc cho trang CHECK */
         .filter-container { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding: 15px 0; background: #fff; border-bottom: 1px solid #ddd; }
-        .filter-btn { padding: 8px 15px; border: 2px solid var(--primary); background: #fff; color: var(--primary); font-weight: bold; border-radius: 20px; cursor: pointer; transition: 0.3s; }
+        .filter-btn { padding: 8px 15px; border: 2px solid var(--primary); background: #fff; color: var(--primary); font-weight: bold; border-radius: 20px; cursor: pointer; }
         .filter-btn.active { background: var(--primary); color: #fff; }
-
         .loading { text-align: center; padding: 30px; font-style: italic; color: #888; }
     </style>
 </head>
@@ -42,25 +37,10 @@
 <header>TENNIS CD9 2026</header>
 
 <div class="container">
-    <section id="sec-BXH">
-        <div class="section-title">🏆 Bảng Xếp Hạng (BXH)</div>
-        <div id="BXH" class="loading">Đang tải...</div>
-    </section>
-
-    <section id="sec-MATCHES">
-        <div class="section-title">🎾 Lịch Thi Đấu & Kết Quả</div>
-        <div id="MATCHES" class="loading">Đang tải...</div>
-    </section>
-
-    <section id="sec-PAIRS">
-        <div class="section-title">🤝 Danh Sách Cặp Đấu</div>
-        <div id="PAIRS" class="loading">Đang tải...</div>
-    </section>
-
-    <section id="sec-TEAMS">
-        <div class="section-title">👥 Danh Sách Teams</div>
-        <div id="TEAMS" class="loading">Đang tải...</div>
-    </section>
+    <section id="sec-BXH"><div class="section-title">🏆 Bảng Xếp Hạng (BXH)</div><div id="BXH" class="loading">Đang tải...</div></section>
+    <section id="sec-MATCHES"><div class="section-title">🎾 Lịch Thi Đấu & Kết Quả</div><div id="MATCHES" class="loading">Đang tải...</div></section>
+    <section id="sec-PAIRS"><div class="section-title">🤝 Danh Sách Cặp Đấu</div><div id="PAIRS" class="loading">Đang tải...</div></section>
+    <section id="sec-TEAMS"><div class="section-title">👥 Danh Sách Teams</div><div id="TEAMS" class="loading">Đang tải...</div></section>
 
     <section id="sec-CHECK">
         <div class="section-title">✅ Kiểm Tra Theo Đội</div>
@@ -71,15 +51,13 @@
             <button class="filter-btn" onclick="filterMatches('D3', this)">D3</button>
             <button class="filter-btn" onclick="filterMatches('D4', this)">D4</button>
         </div>
-        <div id="CHECK_RESULT" class="table-wrapper">
-            <p style="text-align:center; padding:20px;">Chọn một đội để xem kết quả.</p>
-        </div>
+        <div id="CHECK_RESULT" class="table-wrapper"></div>
     </section>
 </div>
 
 <script>
 const SHEET_ID = "1pak2Yy4rZ3U50rYj2rlfCOkqyDDpnOns";
-let allMatchesData = []; // Lưu trữ dữ liệu gốc để lọc
+let allMatchesData = [];
 
 async function loadSheet(sheetName, targetId) {
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
@@ -87,31 +65,41 @@ async function loadSheet(sheetName, targetId) {
         const r = await fetch(url);
         const txt = await r.text();
         const json = JSON.parse(txt.substring(47).slice(0, -2));
-        const rows = json.table.rows;
-        
         if (targetId === "MATCHES") {
-            allMatchesData = rows.filter(row => row.c && row.c.some(cell => cell && cell.v !== null));
-            renderMatchTable(allMatchesData, "MATCHES");
-        } else if (targetId === "CHECK") {
-            // Chỉ load cấu trúc hoặc giữ dữ liệu
-        } else {
+            allMatchesData = json.table.rows.filter(row => row.c && row.c.some(cell => cell && cell.v !== null));
+            renderTable(allMatchesData, "MATCHES", false);
+            renderTable(allMatchesData, "CHECK_RESULT", true, 'ALL'); // Mặc định bảng Check hiện tất cả
+        } else if (targetId !== "CHECK") {
             renderSimpleTable(json.table, targetId);
         }
-    } catch (err) {
-        document.getElementById(targetId).innerHTML = "Lỗi tải dữ liệu.";
-    }
+    } catch (e) { console.error(e); }
 }
 
-function renderMatchTable(rows, targetId) {
+function renderTable(rows, targetId, isCheckMode, selectedTeam = 'ALL') {
     let html = `<table class="tbl-matches"><thead><tr>
         <th>N</th><th>T</th><th>Năm</th><th>Đội 1</th><th colspan="2">Tỷ Số</th><th>Đội 2</th>
+        ${isCheckMode ? '<th style="width:60px">KQ</th>' : ''}
     </tr></thead><tbody>`;
 
     rows.forEach(row => {
+        const s1 = parseInt(row.c[4]?.v) || 0;
+        const s2 = parseInt(row.c[5]?.v) || 0;
+        const team1 = String(row.c[3]?.v || "");
+        const team2 = String(row.c[6]?.v || "");
+        
         html += `<tr>`;
-        for(let i=0; i < 7; i++) {
-            let val = row.c[i] ? (row.c[i].f || row.c[i].v || "") : "";
-            html += `<td>${val}</td>`;
+        for(let i=0; i<7; i++) html += `<td>${row.c[i]?.f || row.c[i]?.v || ""}</td>`;
+        
+        if (isCheckMode) {
+            let resText = "-", resClass = "res-draw";
+            if (selectedTeam !== 'ALL') {
+                const isTeam1 = team1.includes(selectedTeam);
+                if (s1 === s2 && s1 !== 0) { resText = "Hòa"; resClass = "res-draw"; }
+                else if ((isTeam1 && s1 > s2) || (!isTeam1 && s2 > s1)) { resText = "Thắng"; resClass = "res-win"; }
+                else if (s1 === 0 && s2 === 0) { resText = "-"; resClass = ""; }
+                else { resText = "Thua"; resClass = "res-lose"; }
+            }
+            html += `<td class="${resClass}">${resText}</td>`;
         }
         html += `</tr>`;
     });
@@ -126,36 +114,19 @@ function renderSimpleTable(table, targetId) {
     table.rows.forEach(row => {
         if (!row.c || !row.c.some(c => c && c.v !== null)) return;
         html += `<tr>`;
-        row.c.forEach(cell => html += `<td>${cell ? (cell.f || cell.v || "") : ""}</td>`);
+        row.c.forEach(cell => html += `<td>${cell?.f || cell?.v || ""}</td>`);
         html += `</tr>`;
     });
-    html += `</tbody></table>`;
-    document.getElementById(targetId).innerHTML = html;
+    document.getElementById(targetId).innerHTML = html + `</tbody></table>`;
 }
 
 function filterMatches(teamCode, btn) {
-    // Active button style
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-
-    const resultDiv = document.getElementById("CHECK_RESULT");
-    if (teamCode === 'ALL') {
-        renderMatchTable(allMatchesData, "CHECK_RESULT");
-        return;
-    }
-
-    // Lọc: Nếu cột 3 (Đội 1) hoặc cột 6 (Đội 2) chứa mã đội
-    const filtered = allMatchesData.filter(row => {
-        const team1 = String(row.c[3]?.v || "").toUpperCase();
-        const team2 = String(row.c[6]?.v || "").toUpperCase();
-        return team1.includes(teamCode) || team2.includes(teamCode);
-    });
-
-    if (filtered.length > 0) {
-        renderMatchTable(filtered, "CHECK_RESULT");
-    } else {
-        resultDiv.innerHTML = `<p style="text-align:center; padding:20px;">Không có trận nào cho đội ${teamCode}.</p>`;
-    }
+    const filtered = teamCode === 'ALL' ? allMatchesData : allMatchesData.filter(row => 
+        String(row.c[3]?.v || "").includes(teamCode) || String(row.c[6]?.v || "").includes(teamCode)
+    );
+    renderTable(filtered, "CHECK_RESULT", true, teamCode);
 }
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -163,8 +134,8 @@ window.addEventListener('DOMContentLoaded', () => {
     loadSheet("MATCHES", "MATCHES");
     loadSheet("PAIRS", "PAIRS");
     loadSheet("TEAMS", "TEAMS");
+    loadSheet("CHECK", "CHECK");
 });
 </script>
-
 </body>
 </html>
