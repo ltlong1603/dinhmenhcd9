@@ -14,64 +14,50 @@
             --lose: #d32f2f;
             --draw: #757575;
             --warning: #fbc02d;
+            --win-bg: #c8e6c9;
+            --lose-bg: #ffcdd2;
+            --warn-bg: #fff9c4;
         }
 
         body { margin: 0; font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: #333; }
         header { background: var(--dark); color: var(--accent); text-align: center; padding: 15px 0; font-size: 22px; font-weight: 900; text-transform: uppercase; border-bottom: 4px solid var(--primary); position: sticky; top: 0; z-index: 2000; }
         
-        .section-title { background: var(--primary); color: white; padding: 12px; margin-top: 20px; font-weight: bold; text-transform: uppercase; text-align: center; position: sticky; top: 60px; z-index: 1000; }
-        .container { padding: 10px; max-width: 800px; margin: 0 auto; }
+        .section-title { background: var(--primary); color: white; padding: 12px; margin-top: 20px; font-weight: bold; text-transform: uppercase; text-align: center; position: sticky; top: 58px; z-index: 1000; }
+        .container { padding: 10px; max-width: 900px; margin: 0 auto; }
 
-        /* Bảng BXH: Giữ tiêu đề cũ, hỗ trợ cuộn ngang trên mobile */
+        /* Bảng BXH & Pairs: Hỗ trợ cuộn ngang */
         .table-scroll { overflow-x: auto; background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 10px; }
-        table { width: 100%; border-collapse: collapse; min-width: 500px; } /* Đảm bảo bảng không bị bóp quá nhỏ */
-        th, td { border: 1px solid #ddd; padding: 10px 8px; text-align: center; font-size: 13px; }
-        th { background: #f8f9fa; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th, td { border: 1px solid #ccc; padding: 10px 5px; text-align: center; font-size: 13px; word-wrap: break-word; }
+        th { background: #e8f5e9; font-weight: bold; }
+        .head-col { background: #e8f5e9; font-weight: bold; }
 
-        /* Bảng Cặp đấu & Teams */
-        .standard-table { min-width: 100%; }
-        .status-full { background-color: var(--win) !important; color: white; font-weight: bold; }
-        .status-none { background-color: var(--lose) !important; color: white; font-weight: bold; }
-        .status-missing { background-color: var(--warning) !important; color: #333; font-weight: bold; }
+        /* Màu sắc cho bảng Cặp đấu */
+        .cell-full { background-color: var(--win-bg) !important; color: var(--win) !important; font-weight: bold; }
+        .cell-none { background-color: var(--lose-bg) !important; color: var(--lose) !important; font-weight: bold; }
+        .cell-missing { background-color: var(--warn-bg) !important; color: #a57d00 !important; font-weight: bold; }
+        .cell-empty { background-color: #f0f0f0; }
 
-        /* Card Layout tối ưu độ cao */
+        /* Card Layout phần Check & Lịch thi đấu */
         .card-list { display: flex; flex-direction: column; gap: 8px; padding: 10px 0; }
         .match-card {
-            background: white;
-            border-radius: 10px;
-            padding: 12px 10px; /* Thu nhỏ padding */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            border-top: 4px solid #ddd;
+            background: white; border-radius: 10px; padding: 10px;
+            display: flex; flex-direction: column; align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-top: 4px solid #ddd;
         }
-
         .match-date { font-size: 11px; color: #888; margin-bottom: 5px; }
         .match-main { display: flex; align-items: center; justify-content: center; width: 100%; gap: 10px; }
         .team-box { flex: 1; text-align: center; font-weight: 800; font-size: 14px; color: #1a237e; }
         .score-display { display: flex; align-items: center; gap: 4px; }
-        .score-box { background: #000; color: var(--accent); width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 20px; font-weight: 900; }
-        .score-dash { font-weight: bold; color: #888; }
+        .score-box { background: #000; color: var(--accent); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 18px; font-weight: 900; }
 
-        /* Badge kết quả ở phần Check giống version trước */
-        .result-badge {
-            margin-top: 8px;
-            padding: 4px 20px;
-            border-radius: 15px;
-            color: white;
-            font-weight: 800;
-            font-size: 12px;
-            text-transform: uppercase;
-        }
-        .win-bg { background: var(--win); border-top-color: var(--win) !important; }
-        .lose-bg { background: var(--lose); border-top-color: var(--lose) !important; }
-        .draw-bg { background: var(--draw); border-top-color: var(--draw) !important; }
+        /* Badge Kết quả Check */
+        .result-badge { margin-top: 8px; padding: 3px 15px; border-radius: 12px; color: white; font-weight: 800; font-size: 11px; text-transform: uppercase; }
+        .win-badge { background: var(--win); } .lose-badge { background: var(--lose); } .draw-badge { background: var(--draw); }
 
         .filter-container { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; padding: 15px; background: white; border-radius: 8px; }
-        .filter-btn { padding: 8px 16px; border: 2px solid var(--primary); background: white; color: var(--primary); font-weight: bold; border-radius: 20px; cursor: pointer; font-size: 12px; }
+        .filter-btn { padding: 8px 15px; border: 2px solid var(--primary); background: white; color: var(--primary); font-weight: bold; border-radius: 20px; cursor: pointer; font-size: 12px; }
         .filter-btn.active { background: var(--primary); color: white; }
-
         .loading { text-align: center; padding: 30px; color: #888; font-style: italic; }
     </style>
 </head>
@@ -100,7 +86,7 @@
         <div id="TEAMS" class="table-scroll"><div class="loading">Đang tải...</div></div>
     </section>
 
-    <section id="sec-CHECK">
+    <section>
         <div class="section-title">✅ Kiểm Tra Kết Quả</div>
         <div class="filter-container">
             <button class="filter-btn active" onclick="filterMatches('ALL', this)">Tất cả</button>
@@ -130,7 +116,7 @@ async function loadSheet(sheetName, targetId) {
             renderCards(allMatches, "MATCHES", "ALL");
             renderCards(allMatches, "CHECK_RESULT", "ALL");
         } else if (sheetName === "PAIRS") {
-            renderPairs(json.table, targetId);
+            renderMatrixPairs(json.table, targetId);
         } else {
             renderTable(json.table, targetId);
         }
@@ -150,48 +136,45 @@ function renderTable(table, targetId) {
     document.getElementById(targetId).innerHTML = html + `</tbody></table>`;
 }
 
-function renderPairs(table, targetId) {
-    let html = `<table class="standard-table"><thead><tr>`;
-    table.cols.forEach(col => html += `<th>${col.label || ""}</th>`);
-    html += `</tr></thead><tbody>`;
-    table.rows.forEach(row => {
-        if (!row.c || !row.c[0]) return;
-        let statusText = String(row.c[2]?.v || "").trim();
-        let statusClass = "";
-        if (statusText === "Đủ 2 lượt") statusClass = "status-full";
-        else if (statusText === "Chưa đấu") statusClass = "status-none";
-        else if (statusText === "Thiếu lượt") statusClass = "status-missing";
-
+function renderMatrixPairs(table, targetId) {
+    // Tự động dựng bảng 5x5 dựa trên dữ liệu ma trận từ Sheet
+    let html = `<table>`;
+    table.rows.forEach((row, rIdx) => {
         html += `<tr>`;
-        row.c.forEach((cell, idx) => {
-            let val = cell?.f || cell?.v || "";
-            html += `<td class="${idx === 2 ? statusClass : ''}">${val}</td>`;
+        row.c.forEach((cell, cIdx) => {
+            let val = cell?.v || "";
+            let cls = "";
+            if (rIdx === 0 || cIdx === 0) cls = "head-col";
+            else if (rIdx === cIdx) cls = "cell-empty";
+            else if (val.includes("Đủ 2 lượt")) cls = "cell-full";
+            else if (val.includes("Chưa đấu")) cls = "cell-none";
+            else if (val.includes("Thiếu lượt")) cls = "cell-missing";
+            
+            html += `<td class="${cls}">${val}</td>`;
         });
         html += `</tr>`;
     });
-    document.getElementById(targetId).innerHTML = html + `</tbody></table>`;
+    document.getElementById(targetId).innerHTML = html + `</table>`;
 }
 
 function renderCards(rows, targetId, selectedTeam) {
     let html = "";
     rows.forEach(row => {
-        const date = `${row.c[0]?.v || ''}/${row.c[1]?.v || ''}/${row.c[2]?.v || ''}`;
-        const t1 = String(row.c[3]?.v || "");
-        const s1 = row.c[4]?.v !== null ? row.c[4]?.v : "-";
-        const s2 = row.c[5]?.v !== null ? row.c[5]?.v : "-";
-        const t2 = String(row.c[6]?.v || "");
+        const d = `${row.c[0]?.v || ''}/${row.c[1]?.v || ''}/${row.c[2]?.v || ''}`;
+        const t1 = String(row.c[3]?.v || ""), t2 = String(row.c[6]?.v || "");
+        const s1 = row.c[4]?.v ?? "-", s2 = row.c[5]?.v ?? "-";
 
-        let resultLabel = "", statusClass = "";
+        let badge = "", badgeCls = "", borderCls = "";
         if (selectedTeam !== "ALL" && s1 !== "-" && s2 !== "-") {
             const isT1 = t1.includes(selectedTeam);
-            if (s1 == s2) { resultLabel = "HÒA"; statusClass = "draw-bg"; }
-            else if ((isT1 && s1 > s2) || (!isT1 && s2 > s1)) { resultLabel = "THẮNG"; statusClass = "win-bg"; }
-            else { resultLabel = "THUA"; statusClass = "lose-bg"; }
+            if (s1 == s2) { badge = "HÒA"; badgeCls = "draw-badge"; borderCls = "draw-bg"; }
+            else if ((isT1 && s1 > s2) || (!isT1 && s2 > s1)) { badge = "THẮNG"; badgeCls = "win-badge"; borderCls = "win-bg"; }
+            else { badge = "THUA"; badgeCls = "lose-badge"; borderCls = "lose-bg"; }
         }
 
         html += `
-            <div class="match-card ${statusClass}">
-                <div class="match-date">${date}</div>
+            <div class="match-card" style="border-top-color: ${badge === 'THẮNG' ? 'var(--win)' : badge === 'THUA' ? 'var(--lose)' : '#ddd'}">
+                <div class="match-date">${d}</div>
                 <div class="match-main">
                     <div class="team-box">${t1}</div>
                     <div class="score-display">
@@ -201,7 +184,7 @@ function renderCards(rows, targetId, selectedTeam) {
                     </div>
                     <div class="team-box">${t2}</div>
                 </div>
-                ${resultLabel ? `<div class="result-badge ${statusClass}">${resultLabel}</div>` : ''}
+                ${badge ? `<div class="result-badge ${badgeCls}">${badge}</div>` : ''}
             </div>
         `;
     });
