@@ -12,97 +12,29 @@
             --bg: #f0f0f0;
         }
 
-        body {
-            margin: 0;
-            font-family: -apple-system, system-ui, sans-serif;
-            background: var(--bg);
-            color: #333;
-            padding-bottom: 50px;
-        }
-
-        header {
-            background: var(--dark);
-            color: var(--accent);
-            text-align: center;
-            padding: 20px 0;
-            font-size: 22px;
-            font-weight: 900;
-            text-transform: uppercase;
-            border-bottom: 4px solid var(--primary);
-            position: sticky;
-            top: 0;
-            z-index: 2000;
-        }
-
-        .section-title {
-            background: var(--primary);
-            color: white;
-            padding: 10px;
-            margin-top: 20px;
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: sticky;
-            top: 65px;
-            z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
+        body { margin: 0; font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: #333; padding-bottom: 50px; }
+        header { background: var(--dark); color: var(--accent); text-align: center; padding: 20px 0; font-size: 22px; font-weight: 900; text-transform: uppercase; border-bottom: 4px solid var(--primary); position: sticky; top: 0; z-index: 2000; }
+        
+        .section-title { background: var(--primary); color: white; padding: 10px; margin-top: 20px; font-weight: bold; text-transform: uppercase; font-size: 16px; display: flex; align-items: center; justify-content: center; position: sticky; top: 68px; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         .container { padding: 10px; max-width: 100%; }
+        .table-wrapper { background: white; margin-bottom: 10px; overflow-x: auto; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        th, td { border: 1px solid #ddd; padding: 10px 2px; text-align: center; vertical-align: middle; font-size: 13px; word-wrap: break-word; }
+        th { background: #f8f9fa; color: #000; font-weight: bold; font-size: 11px; }
 
-        .table-wrapper {
-            background: white;
-            margin-bottom: 10px;
-            overflow-x: auto;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
+        /* Style cho MATCHES & CHECK */
+        .tbl-matches th:nth-child(1), .tbl-matches td:nth-child(1) { width: 30px; }
+        .tbl-matches th:nth-child(2), .tbl-matches td:nth-child(2) { width: 30px; }
+        .tbl-matches th:nth-child(3), .tbl-matches td:nth-child(3) { width: 45px; }
+        .tbl-matches td:nth-child(5), .tbl-matches td:nth-child(6) { background: #fffde7 !important; font-weight: bold; color: #d32f2f; font-size: 15px; width: 32px; }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            table-layout: fixed;
-        }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px 2px;
-            text-align: center;
-            vertical-align: middle;
-            font-size: 13px;
-            word-wrap: break-word;
-        }
-
-        th {
-            background: #f8f9fa;
-            color: #000;
-            font-weight: bold;
-            font-size: 11px;
-        }
-
-        /* Fix cột MATCHES - Cấu trúc 7 cột từ Sheet */
-        .tbl-matches th:nth-child(1), .tbl-matches td:nth-child(1) { width: 30px; } /* N */
-        .tbl-matches th:nth-child(2), .tbl-matches td:nth-child(2) { width: 30px; } /* T */
-        .tbl-matches th:nth-child(3), .tbl-matches td:nth-child(3) { width: 45px; } /* Năm */
-        .tbl-matches th:nth-child(4), .tbl-matches td:nth-child(4) { width: auto; font-weight: 600; } /* Team 1 */
-        .tbl-matches td:nth-child(5), .tbl-matches td:nth-child(6) { 
-            width: 32px; 
-            background: #fffde7 !important; 
-            font-weight: bold; 
-            color: #d32f2f;
-            font-size: 15px;
-        } /* Hai ô tỷ số */
-        .tbl-matches th:nth-child(7), .tbl-matches td:nth-child(7) { width: auto; font-weight: 600; } /* Team 2 */
+        /* Bộ lọc cho trang CHECK */
+        .filter-container { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding: 15px 0; background: #fff; border-bottom: 1px solid #ddd; }
+        .filter-btn { padding: 8px 15px; border: 2px solid var(--primary); background: #fff; color: var(--primary); font-weight: bold; border-radius: 20px; cursor: pointer; transition: 0.3s; }
+        .filter-btn.active { background: var(--primary); color: #fff; }
 
         .loading { text-align: center; padding: 30px; font-style: italic; color: #888; }
-        section { margin-bottom: 30px; }
-
-        @media (max-width: 480px) {
-            th, td { font-size: 12px; }
-            .section-title { font-size: 14px; }
-        }
     </style>
 </head>
 <body>
@@ -112,92 +44,125 @@
 <div class="container">
     <section id="sec-BXH">
         <div class="section-title">🏆 Bảng Xếp Hạng (BXH)</div>
-        <div id="BXH" class="loading">Đang tải dữ liệu...</div>
+        <div id="BXH" class="loading">Đang tải...</div>
     </section>
 
     <section id="sec-MATCHES">
         <div class="section-title">🎾 Lịch Thi Đấu & Kết Quả</div>
-        <div id="MATCHES" class="loading">Đang tải dữ liệu...</div>
+        <div id="MATCHES" class="loading">Đang tải...</div>
     </section>
 
     <section id="sec-PAIRS">
         <div class="section-title">🤝 Danh Sách Cặp Đấu</div>
-        <div id="PAIRS" class="loading">Đang tải dữ liệu...</div>
+        <div id="PAIRS" class="loading">Đang tải...</div>
     </section>
 
     <section id="sec-TEAMS">
         <div class="section-title">👥 Danh Sách Teams</div>
-        <div id="TEAMS" class="loading">Đang tải dữ liệu...</div>
+        <div id="TEAMS" class="loading">Đang tải...</div>
     </section>
 
     <section id="sec-CHECK">
-        <div class="section-title">✅ Kiểm Tra (Check)</div>
-        <div id="CHECK" class="loading">Đang tải dữ liệu...</div>
+        <div class="section-title">✅ Kiểm Tra Theo Đội</div>
+        <div class="filter-container">
+            <button class="filter-btn active" onclick="filterMatches('ALL', this)">Tất cả</button>
+            <button class="filter-btn" onclick="filterMatches('D1', this)">D1</button>
+            <button class="filter-btn" onclick="filterMatches('D2', this)">D2</button>
+            <button class="filter-btn" onclick="filterMatches('D3', this)">D3</button>
+            <button class="filter-btn" onclick="filterMatches('D4', this)">D4</button>
+        </div>
+        <div id="CHECK_RESULT" class="table-wrapper">
+            <p style="text-align:center; padding:20px;">Chọn một đội để xem kết quả.</p>
+        </div>
     </section>
 </div>
 
 <script>
 const SHEET_ID = "1pak2Yy4rZ3U50rYj2rlfCOkqyDDpnOns";
+let allMatchesData = []; // Lưu trữ dữ liệu gốc để lọc
 
 async function loadSheet(sheetName, targetId) {
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
-    
     try {
         const r = await fetch(url);
         const txt = await r.text();
         const json = JSON.parse(txt.substring(47).slice(0, -2));
         const rows = json.table.rows;
-        const cols = json.table.cols;
-
-        let html = `<div class="table-wrapper"><table class="${targetId === 'MATCHES' ? 'tbl-matches' : ''}"><thead><tr>`;
         
-        // XỬ LÝ HEADER ĐẶC BIỆT CHO MATCHES
         if (targetId === "MATCHES") {
-            html += `
-                <th>N</th>
-                <th>T</th>
-                <th>Năm</th>
-                <th>Đội 1</th>
-                <th colspan="2">Tỷ Số</th>
-                <th>Đội 2</th>
-            `;
+            allMatchesData = rows.filter(row => row.c && row.c.some(cell => cell && cell.v !== null));
+            renderMatchTable(allMatchesData, "MATCHES");
+        } else if (targetId === "CHECK") {
+            // Chỉ load cấu trúc hoặc giữ dữ liệu
         } else {
-            for(let i=0; i < cols.length; i++) {
-                let label = cols[i].label ? cols[i].label : "";
-                html += `<th>${label}</th>`;
-            }
+            renderSimpleTable(json.table, targetId);
         }
-        
-        html += `</tr></thead><tbody>`;
-
-        rows.forEach(row => {
-            if (!row.c || !row.c.some(cell => cell && cell.v !== null)) return;
-            html += `<tr>`;
-            // Luôn chạy theo số lượng cột của Header (cols.length) để tránh lệch
-            for(let i=0; i < (targetId === "MATCHES" ? 7 : cols.length); i++) {
-                let cell = row.c[i];
-                let val = "";
-                if (cell) {
-                    val = cell.f ? cell.f : (cell.v !== null ? cell.v : "");
-                }
-                html += `<td>${val}</td>`;
-            }
-            html += `</tr>`;
-        });
-
-        html += `</tbody></table></div>`;
-        document.getElementById(targetId).innerHTML = html;
     } catch (err) {
-        document.getElementById(targetId).innerHTML = "<p style='text-align:center'>Lỗi tải dữ liệu.</p>";
+        document.getElementById(targetId).innerHTML = "Lỗi tải dữ liệu.";
+    }
+}
+
+function renderMatchTable(rows, targetId) {
+    let html = `<table class="tbl-matches"><thead><tr>
+        <th>N</th><th>T</th><th>Năm</th><th>Đội 1</th><th colspan="2">Tỷ Số</th><th>Đội 2</th>
+    </tr></thead><tbody>`;
+
+    rows.forEach(row => {
+        html += `<tr>`;
+        for(let i=0; i < 7; i++) {
+            let val = row.c[i] ? (row.c[i].f || row.c[i].v || "") : "";
+            html += `<td>${val}</td>`;
+        }
+        html += `</tr>`;
+    });
+    html += `</tbody></table>`;
+    document.getElementById(targetId).innerHTML = html;
+}
+
+function renderSimpleTable(table, targetId) {
+    let html = `<table><thead><tr>`;
+    table.cols.forEach(col => html += `<th>${col.label || ""}</th>`);
+    html += `</tr></thead><tbody>`;
+    table.rows.forEach(row => {
+        if (!row.c || !row.c.some(c => c && c.v !== null)) return;
+        html += `<tr>`;
+        row.c.forEach(cell => html += `<td>${cell ? (cell.f || cell.v || "") : ""}</td>`);
+        html += `</tr>`;
+    });
+    html += `</tbody></table>`;
+    document.getElementById(targetId).innerHTML = html;
+}
+
+function filterMatches(teamCode, btn) {
+    // Active button style
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const resultDiv = document.getElementById("CHECK_RESULT");
+    if (teamCode === 'ALL') {
+        renderMatchTable(allMatchesData, "CHECK_RESULT");
+        return;
+    }
+
+    // Lọc: Nếu cột 3 (Đội 1) hoặc cột 6 (Đội 2) chứa mã đội
+    const filtered = allMatchesData.filter(row => {
+        const team1 = String(row.c[3]?.v || "").toUpperCase();
+        const team2 = String(row.c[6]?.v || "").toUpperCase();
+        return team1.includes(teamCode) || team2.includes(teamCode);
+    });
+
+    if (filtered.length > 0) {
+        renderMatchTable(filtered, "CHECK_RESULT");
+    } else {
+        resultDiv.innerHTML = `<p style="text-align:center; padding:20px;">Không có trận nào cho đội ${teamCode}.</p>`;
     }
 }
 
 window.addEventListener('DOMContentLoaded', () => {
     loadSheet("BXH", "BXH");
     loadSheet("MATCHES", "MATCHES");
-    loadSheet("PAIRS", "PAIRS"); // Tải PAIRS trước
-    loadSheet("TEAMS", "TEAMS"); // Tải TEAMS sau
-    loadSheet("CHECK", "CHECK");
+    loadSheet("PAIRS", "PAIRS");
+    loadSheet("TEAMS", "TEAMS");
 });
 </script>
 
