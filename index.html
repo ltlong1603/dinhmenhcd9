@@ -1,197 +1,228 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>TENNIS CD9 2026</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TENNIS CD9 2026</title>
+    <style>
+        :root {
+            --primary-color: #2e7d32; /* Màu xanh lá Tennis */
+            --accent-color: #ffd600;  /* Màu vàng bóng tennis */
+            --bg-color: #f0f2f5;
+            --text-dark: #1a1a1a;
+        }
 
-<style>
-body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;
-  background:#f4f4f4;
-}
-header{
-  background:#000;
-  color:#fff;
-  text-align:center;
-  padding:14px;
-  font-weight:700;
-}
-nav{
-  display:flex;
-  background:#111;
-}
-nav button{
-  flex:1;
-  padding:12px;
-  background:#111;
-  color:#fff;
-  border:none;
-  font-weight:600;
-}
-nav button.active{
-  background:#fff;
-  color:#000;
-}
-section{
-  display:none;
-  padding:12px;
-}
-section.active{
-  display:block;
-}
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-dark);
+        }
 
-table{
-  width:100%;
-  border-collapse:collapse;
-  background:#fff;
-}
-th,td{
-  border:1px solid #ddd;
-  padding:6px;
-  text-align:center;
-  font-size:14px;
-}
-th{
-  background:#eee;
-  font-weight:700;
-}
+        header {
+            background: #000;
+            color: var(--accent-color);
+            text-align: center;
+            padding: 20px 10px;
+            font-size: 24px;
+            font-weight: 800;
+            text-transform: uppercase;
+            border-bottom: 4px solid var(--primary-color);
+        }
 
-/* MATCHES layout */
-.matches-title{
-  background:#000;
-  color:#ffe600;
-  font-weight:800;
-  text-align:center;
-  padding:8px;
-  margin-bottom:6px;
-}
-.matches-sub{
-  background:#caffc9;
-  font-weight:700;
-}
-.col-day,.col-month,.col-year{ width:8%; }
-.col-team{ width:18%; }
-.col-score{ width:8%; background:#fffda0; }
-.col-score2{ width:8%; background:#fffda0; }
-.col-team2{ width:18%; }
+        nav {
+            display: flex;
+            background: #222;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            overflow-x: auto;
+        }
 
-@media(max-width:600px){
-  th,td{ font-size:12px; padding:4px; }
-}
-</style>
+        nav button {
+            flex: 1;
+            min-width: 80px;
+            padding: 15px 5px;
+            background: none;
+            color: #ccc;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            font-size: 13px;
+        }
+
+        nav button.active {
+            color: #fff;
+            background: var(--primary-color);
+        }
+
+        section {
+            display: none;
+            padding: 15px;
+            animation: fadeIn 0.5s;
+        }
+
+        section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; } to { opacity: 1; }
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto; /* Chống vỡ màn hình điện thoại */
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        th {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            padding: 12px 8px;
+            text-transform: uppercase;
+            font-size: 13px;
+        }
+
+        td {
+            border: 1px solid #eee;
+            padding: 10px 8px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        tr:nth-child(even) { background: #fafafa; }
+        tr:hover { background: #f1f8e9; }
+
+        /* Style riêng cho trang MATCHES giống Sheet */
+        .match-header {
+            background: #000 !important;
+            color: var(--accent-color) !important;
+        }
+        .score-cell {
+            background: #fff9c4 !important; /* Màu vàng nhạt giống sheet */
+            font-weight: bold;
+            color: #d32f2f;
+        }
+        .team-name {
+            font-weight: 600;
+            width: 25%;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+            color: #666;
+        }
+    </style>
 </head>
-
 <body>
 
 <header>TENNIS CD9 2026</header>
 
-<nav>
-  <button onclick="showTab('BXH')" class="active">BXH</button>
-  <button onclick="showTab('MATCHES')">MATCHES</button>
-  <button onclick="showTab('TEAMS')">TEAMS</button>
-  <button onclick="showTab('PAIRS')">PAIRS</button>
-  <button onclick="showTab('CHECK')">CHECK</button>
+<nav id="mainNav">
+    <button onclick="changeTab(event, 'BXH')" class="active">BXH</button>
+    <button onclick="changeTab(event, 'MATCHES')">MATCHES</button>
+    <button onclick="changeTab(event, 'TEAMS')">TEAMS</button>
+    <button onclick="changeTab(event, 'PAIRS')">PAIRS</button>
+    <button onclick="changeTab(event, 'CHECK')">CHECK</button>
 </nav>
 
-<section id="BXH" class="active"></section>
-<section id="MATCHES"></section>
-<section id="TEAMS"></section>
-<section id="PAIRS"></section>
-<section id="CHECK"></section>
+<section id="BXH" class="active"><div class="loading">Đang tải dữ liệu...</div></section>
+<section id="MATCHES"><div class="loading">Đang tải dữ liệu...</div></section>
+<section id="TEAMS"><div class="loading">Đang tải dữ liệu...</div></section>
+<section id="PAIRS"><div class="loading">Đang tải dữ liệu...</div></section>
+<section id="CHECK"><div class="loading">Đang tải dữ liệu...</div></section>
 
 <script>
 const SHEET_ID = "1pak2Yy4rZ3U50rYj2rlfCOkqyDDpnOns";
 
-function gviz(sheet){
-  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${sheet}`;
+function getSheetUrl(sheetName) {
+    return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
 }
 
-function showTab(id){
-  document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
-  document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-  event.target.classList.add("active");
+function changeTab(evt, tabId) {
+    const sections = document.querySelectorAll("section");
+    const buttons = document.querySelectorAll("nav button");
+    
+    sections.forEach(s => s.classList.remove("active"));
+    buttons.forEach(b => b.classList.remove("active"));
+    
+    document.getElementById(tabId).classList.add("active");
+    evt.currentTarget.classList.add("active");
 }
 
-function clean(v){
-  return (v===null || v===undefined) ? "" : v;
+async function fetchData(sheetName) {
+    try {
+        const response = await fetch(getSheetUrl(sheetName));
+        const text = await response.text();
+        const json = JSON.parse(text.substring(47).slice(0, -2));
+        return json.table;
+    } catch (e) {
+        console.error("Lỗi tải sheet:", sheetName);
+        return null;
+    }
 }
 
-function loadSimpleTable(sheet, target){
-  fetch(gviz(sheet))
-  .then(r=>r.text())
-  .then(t=>{
-    const json = JSON.parse(t.substring(47).slice(0,-2));
-    const cols = json.table.cols.map(c=>c.label);
-    const rows = json.table.rows;
+function formatValue(v) {
+    if (v === null || v === undefined) return "";
+    return v.f ? v.f : v.v;
+}
 
-    let html="<table><tr>";
-    cols.forEach(c=>html+=`<th>${c}</th>`);
-    html+="</tr>";
+async function renderTable(sheetName, targetId) {
+    const data = await fetchData(sheetName);
+    if (!data) return;
 
-    rows.forEach(r=>{
-      html+="<tr>";
-      r.c.forEach(c=>html+=`<td>${clean(c?.v)}</td>`);
-      html+="</tr>";
+    let html = '<div class="table-container"><table><thead><tr>';
+    
+    // Tạo Header
+    data.cols.forEach(col => {
+        if(col.label) html += `<th>${col.label}</th>`;
+    });
+    html += '</tr></thead><tbody>';
+
+    // Tạo Rows
+    data.rows.forEach(row => {
+        html += '<tr>';
+        row.c.forEach((cell, index) => {
+            let className = "";
+            let val = formatValue(cell);
+            
+            // Tùy biến cho trang MATCHES
+            if (sheetName === "MATCHES") {
+                if (index === 4 || index === 5) className = "score-cell";
+                if (index === 3 || index === 6) className = "team-name";
+            }
+            
+            html += `<td class="${className}">${val}</td>`;
+        });
+        html += '</tr>';
     });
 
-    html+="</table>";
-    document.getElementById(target).innerHTML=html;
-  });
+    html += '</tbody></table></div>';
+    document.getElementById(targetId).innerHTML = html;
 }
 
-/* MATCHES custom layout */
-function loadMatches(){
-  fetch(gviz("MATCHES"))
-  .then(r=>r.text())
-  .then(t=>{
-    const j=JSON.parse(t.substring(47).slice(0,-2));
-    const r=j.table.rows;
-
-    let html=`
-    <div class="matches-title">CHI TIẾT KẾT QUẢ TỪNG TRẬN ĐẤU</div>
-    <table>
-      <tr class="matches-sub">
-        <th colspan="3">NGÀY THÁNG NĂM</th>
-        <th colspan="4">DANH SÁCH CÁC CẶP ĐẤU</th>
-      </tr>
-      <tr>
-        <th class="col-day"></th>
-        <th class="col-month"></th>
-        <th class="col-year"></th>
-        <th class="col-team">Sân Ngon</th>
-        <th class="col-score">Tỷ số</th>
-        <th class="col-score2"></th>
-        <th class="col-team2">Sân Mù Mắt</th>
-      </tr>
-    `;
-
-    r.forEach(x=>{
-      html+=`
-      <tr>
-        <td>${clean(x.c[0]?.v)}</td>
-        <td>${clean(x.c[1]?.v)}</td>
-        <td>${clean(x.c[2]?.v)}</td>
-        <td>${clean(x.c[3]?.v)}</td>
-        <td>${clean(x.c[4]?.v)}</td>
-        <td>${clean(x.c[5]?.v)}</td>
-        <td>${clean(x.c[6]?.v)}</td>
-      </tr>`;
-    });
-
-    html+="</table>";
-    document.getElementById("MATCHES").innerHTML=html;
-  });
-}
-
-/* Load all */
-loadSimpleTable("BXH","BXH");
-loadMatches();
-loadSimpleTable("TEAMS","TEAMS");
-loadSimpleTable("PAIRS","PAIRS");
-loadSimpleTable("CHECK","CHECK");
+// Khởi tạo
+window.onload = () => {
+    renderTable("BXH", "BXH");
+    renderTable("MATCHES", "MATCHES");
+    renderTable("TEAMS", "TEAMS");
+    renderTable("PAIRS", "PAIRS");
+    renderTable("CHECK", "CHECK");
+};
 </script>
 
 </body>
