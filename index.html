@@ -9,7 +9,7 @@
             --primary: #1b5e20;
             --accent: #ffff00;
             --dark: #121212;
-            --bg: #f4f4f4;
+            --bg: #f0f0f0;
         }
 
         body {
@@ -17,99 +17,104 @@
             font-family: -apple-system, system-ui, sans-serif;
             background: var(--bg);
             color: #333;
+            padding-bottom: 50px;
         }
 
         header {
             background: var(--dark);
             color: var(--accent);
             text-align: center;
-            padding: 12px 0;
-            font-size: 18px;
-            font-weight: 800;
+            padding: 20px 0;
+            font-size: 22px;
+            font-weight: 900;
             text-transform: uppercase;
-            border-bottom: 3px solid var(--primary);
-        }
-
-        nav {
-            display: flex;
-            background: #222;
+            border-bottom: 4px solid var(--primary);
             position: sticky;
             top: 0;
-            z-index: 1000;
-            overflow-x: auto;
+            z-index: 2000;
         }
 
-        nav button {
-            flex: 1;
-            padding: 12px 5px;
-            background: none;
-            color: #aaa;
-            border: none;
-            font-weight: bold;
-            font-size: 11px;
-            text-transform: uppercase;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-
-        nav button.active {
-            color: #fff;
+        /* Tiêu đề từng phân mục */
+        .section-title {
             background: var(--primary);
+            color: white;
+            padding: 10px;
+            margin-top: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: sticky;
+            top: 65px; /* Ngay dưới header */
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        section { display: none; padding: 8px; }
-        section.active { display: block; }
+        .container {
+            padding: 10px;
+            max-width: 100%;
+        }
 
-        /* Bảng hiển thị vừa vặn màn hình */
         .table-wrapper {
             background: white;
-            border-radius: 4px;
-            overflow: hidden; /* Không cho tràn */
+            margin-bottom: 10px;
+            overflow-x: auto;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
         table {
-            width: 100%; /* Ép bảng luôn nằm trong màn hình */
+            width: 100%;
             border-collapse: collapse;
-            table-layout: auto; 
+            table-layout: fixed; /* Giữ cột cố định, không bị nhảy */
         }
 
         th, td {
             border: 1px solid #ddd;
-            padding: 6px 2px; /* Giảm padding tối đa */
-            text-align: center; /* Căn giữa nội dung */
+            padding: 8px 2px;
+            text-align: center;
             vertical-align: middle;
-            font-size: 12px; /* Font nhỏ để vừa màn hình mobile */
-            word-break: break-word; /* Tự xuống dòng nếu nội dung quá dài */
+            font-size: 12px;
+            word-wrap: break-word;
         }
 
         th {
-            background: #eee;
+            background: #f8f9fa;
             color: #000;
             font-weight: bold;
-            font-size: 10px;
+            font-size: 11px;
         }
 
-        /* Format riêng cho trang MATCHES */
-        .score {
-            font-weight: 800;
-            color: #d32f2f;
-            background: #fffde7 !important;
-            width: 25px; /* Ép cột tỷ số nhỏ lại */
+        /* Định dạng cột cho trang MATCHES (7 cột) */
+        .tbl-matches th:nth-child(1), .tbl-matches td:nth-child(1) { width: 30px; } /* N */
+        .tbl-matches th:nth-child(2), .tbl-matches td:nth-child(2) { width: 30px; } /* T */
+        .tbl-matches th:nth-child(3), .tbl-matches td:nth-child(3) { width: 45px; } /* Năm */
+        .tbl-matches th:nth-child(4), .tbl-matches td:nth-child(4) { width: auto; text-align: right; padding-right: 5px; } /* Đội 1 */
+        .tbl-matches th:nth-child(5), .tbl-matches td:nth-child(5) { width: 30px; background: #fffde7 !important; font-weight: bold; color: red; } /* S1 */
+        .tbl-matches th:nth-child(6), .tbl-matches td:nth-child(6) { width: 30px; background: #fffde7 !important; font-weight: bold; color: red; } /* S2 */
+        .tbl-matches th:nth-child(7), .tbl-matches td:nth-child(7) { width: auto; text-align: left; padding-left: 5px; } /* Đội 2 */
+
+        /* Căn giữa chữ trong ô tỷ số */
+        .score-val {
+            display: block;
+            width: 100%;
+            text-align: center;
         }
 
-        .player-name {
-            font-weight: 500;
-            line-height: 1.2;
-            color: #1a237e;
+        .loading {
+            text-align: center;
+            padding: 30px;
+            font-style: italic;
+            color: #888;
         }
 
-        .loading { text-align: center; padding: 40px; font-style: italic; color: #666; }
+        /* Khoảng cách giữa các bảng */
+        section { margin-bottom: 30px; }
 
-        /* Tối ưu cực độ cho màn hình rất nhỏ */
-        @media (max-width: 380px) {
-            th, td { font-size: 10px; padding: 4px 1px; }
-            header { font-size: 15px; }
+        @media (max-width: 480px) {
+            th, td { font-size: 11px; }
+            .section-title { font-size: 14px; }
         }
     </style>
 </head>
@@ -117,31 +122,35 @@
 
 <header>TENNIS CD9 2026</header>
 
-<nav>
-    <button onclick="showTab(event, 'BXH')" class="active">BXH</button>
-    <button onclick="showTab(event, 'MATCHES')">MATCHES</button>
-    <button onclick="showTab(event, 'TEAMS')">TEAMS</button>
-    <button onclick="showTab(event, 'PAIRS')">PAIRS</button>
-    <button onclick="showTab(event, 'CHECK')">CHECK</button>
-</nav>
+<div class="container">
+    <section id="sec-BXH">
+        <div class="section-title">🏆 Bảng Xếp Hạng (BXH)</div>
+        <div id="BXH" class="loading">Đang tải dữ liệu...</div>
+    </section>
 
-<div id="content">
-    <section id="BXH" class="active"><div class="loading">Đang tải...</div></section>
-    <section id="MATCHES"><div class="loading">Đang tải...</div></section>
-    <section id="TEAMS"><div class="loading">Đang tải...</div></section>
-    <section id="PAIRS"><div class="loading">Đang tải...</div></section>
-    <section id="CHECK"><div class="loading">Đang tải...</div></section>
+    <section id="sec-MATCHES">
+        <div class="section-title">🎾 Lịch Thi Đấu & Kết Quả</div>
+        <div id="MATCHES" class="loading">Đang tải dữ liệu...</div>
+    </section>
+
+    <section id="sec-TEAMS">
+        <div class="section-title">👥 Danh Sách Teams</div>
+        <div id="TEAMS" class="loading">Đang tải dữ liệu...</div>
+    </section>
+
+    <section id="sec-PAIRS">
+        <div class="section-title">🤝 Danh Sách Cặp Đấu</div>
+        <div id="PAIRS" class="loading">Đang tải dữ liệu...</div>
+    </section>
+
+    <section id="sec-CHECK">
+        <div class="section-title">✅ Kiểm Tra (Check)</div>
+        <div id="CHECK" class="loading">Đang tải dữ liệu...</div>
+    </section>
 </div>
 
 <script>
 const SHEET_ID = "1pak2Yy4rZ3U50rYj2rlfCOkqyDDpnOns";
-
-function showTab(e, id) {
-    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    e.currentTarget.classList.add('active');
-}
 
 async function loadSheet(sheetName, targetId) {
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
@@ -153,21 +162,19 @@ async function loadSheet(sheetName, targetId) {
         const rows = json.table.rows;
         const cols = json.table.cols;
 
-        let html = `<div class="table-wrapper"><table><thead><tr>`;
+        let tableClass = (targetId === "MATCHES") ? "tbl-matches" : "";
+        let html = `<div class="table-wrapper"><table class="${tableClass}"><thead><tr>`;
         
-        // Header
         for(let i=0; i < cols.length; i++) {
             let label = cols[i].label ? cols[i].label : "";
-            // Rút gọn tiêu đề nếu cần để tiết kiệm diện tích mobile
             if(label === "NGÀY") label = "N";
             if(label === "THÁNG") label = "T";
-            if(label === "NĂM") label = "Năm";
             html += `<th>${label}</th>`;
         }
         html += `</tr></thead><tbody>`;
 
         rows.forEach(row => {
-            if (!row.c.some(cell => cell && cell.v !== null)) return;
+            if (!row.c || !row.c.some(cell => cell && cell.v !== null)) return;
 
             html += `<tr>`;
             for(let i=0; i < cols.length; i++) {
@@ -176,14 +183,13 @@ async function loadSheet(sheetName, targetId) {
                 if (cell) {
                     val = cell.f ? cell.f : (cell.v !== null ? cell.v : "");
                 }
-
-                let className = "";
-                if (targetId === "MATCHES") {
-                    if (i === 4 || i === 5) className = "score";
-                    if (i === 3 || i === 6) className = "player-name";
-                }
                 
-                html += `<td class="${className}">${val}</td>`;
+                // Bao bọc giá trị tỷ số để căn giữa tuyệt đối
+                if (targetId === "MATCHES" && (i === 4 || i === 5)) {
+                    val = `<span class="score-val">${val}</span>`;
+                }
+
+                html += `<td>${val}</td>`;
             }
             html += `</tr>`;
         });
@@ -191,10 +197,11 @@ async function loadSheet(sheetName, targetId) {
         html += `</tbody></table></div>`;
         document.getElementById(targetId).innerHTML = html;
     } catch (err) {
-        document.getElementById(targetId).innerHTML = "Lỗi tải dữ liệu.";
+        document.getElementById(targetId).innerHTML = "<p style='text-align:center'>Không tìm thấy dữ liệu tab này.</p>";
     }
 }
 
+// Tự động tải tất cả các bảng khi mở web
 window.addEventListener('DOMContentLoaded', () => {
     loadSheet("BXH", "BXH");
     loadSheet("MATCHES", "MATCHES");
