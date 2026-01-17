@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TENNIS ĐỊNH MỆNH CD9 2026</title>
+    <title>TENNIS CD9 2026</title>
     <style>
         :root {
             --primary: #1b5e20;
@@ -34,7 +34,6 @@
             z-index: 2000;
         }
 
-        /* Tiêu đề từng phân mục */
         .section-title {
             background: var(--primary);
             color: white;
@@ -47,15 +46,12 @@
             align-items: center;
             justify-content: center;
             position: sticky;
-            top: 65px; /* Ngay dưới header */
+            top: 65px;
             z-index: 1000;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        .container {
-            padding: 10px;
-            max-width: 100%;
-        }
+        .container { padding: 10px; max-width: 100%; }
 
         .table-wrapper {
             background: white;
@@ -67,15 +63,15 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            table-layout: fixed; /* Giữ cột cố định, không bị nhảy */
+            table-layout: fixed;
         }
 
         th, td {
             border: 1px solid #ddd;
-            padding: 8px 2px;
+            padding: 10px 2px;
             text-align: center;
             vertical-align: middle;
-            font-size: 12px;
+            font-size: 13px;
             word-wrap: break-word;
         }
 
@@ -86,41 +82,32 @@
             font-size: 11px;
         }
 
-        /* Định dạng cột cho trang MATCHES (7 cột) */
+        /* Fix cột MATCHES - Cấu trúc 7 cột từ Sheet */
         .tbl-matches th:nth-child(1), .tbl-matches td:nth-child(1) { width: 30px; } /* N */
         .tbl-matches th:nth-child(2), .tbl-matches td:nth-child(2) { width: 30px; } /* T */
         .tbl-matches th:nth-child(3), .tbl-matches td:nth-child(3) { width: 45px; } /* Năm */
-        .tbl-matches th:nth-child(4), .tbl-matches td:nth-child(4) { width: auto; text-align: right; padding-right: 5px; } /* Đội 1 */
-        .tbl-matches th:nth-child(5), .tbl-matches td:nth-child(5) { width: 30px; background: #fffde7 !important; font-weight: bold; color: red; } /* S1 */
-        .tbl-matches th:nth-child(6), .tbl-matches td:nth-child(6) { width: 30px; background: #fffde7 !important; font-weight: bold; color: red; } /* S2 */
-        .tbl-matches th:nth-child(7), .tbl-matches td:nth-child(7) { width: auto; text-align: left; padding-left: 5px; } /* Đội 2 */
+        .tbl-matches th:nth-child(4), .tbl-matches td:nth-child(4) { width: auto; font-weight: 600; } /* Team 1 */
+        .tbl-matches td:nth-child(5), .tbl-matches td:nth-child(6) { 
+            width: 32px; 
+            background: #fffde7 !important; 
+            font-weight: bold; 
+            color: #d32f2f;
+            font-size: 15px;
+        } /* Hai ô tỷ số */
+        .tbl-matches th:nth-child(7), .tbl-matches td:nth-child(7) { width: auto; font-weight: 600; } /* Team 2 */
 
-        /* Căn giữa chữ trong ô tỷ số */
-        .score-val {
-            display: block;
-            width: 100%;
-            text-align: center;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 30px;
-            font-style: italic;
-            color: #888;
-        }
-
-        /* Khoảng cách giữa các bảng */
+        .loading { text-align: center; padding: 30px; font-style: italic; color: #888; }
         section { margin-bottom: 30px; }
 
         @media (max-width: 480px) {
-            th, td { font-size: 11px; }
+            th, td { font-size: 12px; }
             .section-title { font-size: 14px; }
         }
     </style>
 </head>
 <body>
 
-<header>TENNIS ĐỊNH MỆNH CD9 2026</header>
+<header>TENNIS CD9 2026</header>
 
 <div class="container">
     <section id="sec-BXH">
@@ -133,14 +120,14 @@
         <div id="MATCHES" class="loading">Đang tải dữ liệu...</div>
     </section>
 
-    <section id="sec-TEAMS">
-        <div class="section-title">👥 Danh Sách Teams</div>
-        <div id="TEAMS" class="loading">Đang tải dữ liệu...</div>
-    </section>
-
     <section id="sec-PAIRS">
         <div class="section-title">🤝 Danh Sách Cặp Đấu</div>
         <div id="PAIRS" class="loading">Đang tải dữ liệu...</div>
+    </section>
+
+    <section id="sec-TEAMS">
+        <div class="section-title">👥 Danh Sách Teams</div>
+        <div id="TEAMS" class="loading">Đang tải dữ liệu...</div>
     </section>
 
     <section id="sec-CHECK">
@@ -162,33 +149,37 @@ async function loadSheet(sheetName, targetId) {
         const rows = json.table.rows;
         const cols = json.table.cols;
 
-        let tableClass = (targetId === "MATCHES") ? "tbl-matches" : "";
-        let html = `<div class="table-wrapper"><table class="${tableClass}"><thead><tr>`;
+        let html = `<div class="table-wrapper"><table class="${targetId === 'MATCHES' ? 'tbl-matches' : ''}"><thead><tr>`;
         
-        for(let i=0; i < cols.length; i++) {
-            let label = cols[i].label ? cols[i].label : "";
-            if(label === "NGÀY") label = "N";
-            if(label === "THÁNG") label = "T";
-            html += `<th>${label}</th>`;
+        // XỬ LÝ HEADER ĐẶC BIỆT CHO MATCHES
+        if (targetId === "MATCHES") {
+            html += `
+                <th>N</th>
+                <th>T</th>
+                <th>Năm</th>
+                <th>Đội 1</th>
+                <th colspan="2">Tỷ Số</th>
+                <th>Đội 2</th>
+            `;
+        } else {
+            for(let i=0; i < cols.length; i++) {
+                let label = cols[i].label ? cols[i].label : "";
+                html += `<th>${label}</th>`;
+            }
         }
+        
         html += `</tr></thead><tbody>`;
 
         rows.forEach(row => {
             if (!row.c || !row.c.some(cell => cell && cell.v !== null)) return;
-
             html += `<tr>`;
-            for(let i=0; i < cols.length; i++) {
+            // Luôn chạy theo số lượng cột của Header (cols.length) để tránh lệch
+            for(let i=0; i < (targetId === "MATCHES" ? 7 : cols.length); i++) {
                 let cell = row.c[i];
                 let val = "";
                 if (cell) {
                     val = cell.f ? cell.f : (cell.v !== null ? cell.v : "");
                 }
-                
-                // Bao bọc giá trị tỷ số để căn giữa tuyệt đối
-                if (targetId === "MATCHES" && (i === 4 || i === 5)) {
-                    val = `<span class="score-val">${val}</span>`;
-                }
-
                 html += `<td>${val}</td>`;
             }
             html += `</tr>`;
@@ -197,16 +188,15 @@ async function loadSheet(sheetName, targetId) {
         html += `</tbody></table></div>`;
         document.getElementById(targetId).innerHTML = html;
     } catch (err) {
-        document.getElementById(targetId).innerHTML = "<p style='text-align:center'>Không tìm thấy dữ liệu tab này.</p>";
+        document.getElementById(targetId).innerHTML = "<p style='text-align:center'>Lỗi tải dữ liệu.</p>";
     }
 }
 
-// Tự động tải tất cả các bảng khi mở web
 window.addEventListener('DOMContentLoaded', () => {
     loadSheet("BXH", "BXH");
     loadSheet("MATCHES", "MATCHES");
-    loadSheet("TEAMS", "TEAMS");
-    loadSheet("PAIRS", "PAIRS");
+    loadSheet("PAIRS", "PAIRS"); // Tải PAIRS trước
+    loadSheet("TEAMS", "TEAMS"); // Tải TEAMS sau
     loadSheet("CHECK", "CHECK");
 });
 </script>
