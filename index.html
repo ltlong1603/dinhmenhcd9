@@ -9,50 +9,45 @@
             --primary: #1b5e20;
             --accent: #ffff00;
             --dark: #121212;
-            --gray: #f5f5f5;
+            --bg: #f4f4f4;
         }
 
         body {
             margin: 0;
-            font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: #eee;
+            font-family: -apple-system, system-ui, sans-serif;
+            background: var(--bg);
             color: #333;
-            line-height: 1.5;
         }
 
         header {
             background: var(--dark);
             color: var(--accent);
             text-align: center;
-            padding: 15px 0;
-            font-size: 20px;
-            font-weight: 900;
-            letter-spacing: 1px;
+            padding: 12px 0;
+            font-size: 18px;
+            font-weight: 800;
             text-transform: uppercase;
             border-bottom: 3px solid var(--primary);
         }
 
-        /* Menu tối ưu cho mobile */
         nav {
             display: flex;
             background: #222;
-            sticky;
+            position: sticky;
             top: 0;
             z-index: 1000;
             overflow-x: auto;
-            scrollbar-width: none;
         }
-        nav::-webkit-scrollbar { display: none; }
 
         nav button {
             flex: 1;
-            min-width: 75px;
             padding: 12px 5px;
             background: none;
             color: #aaa;
             border: none;
             font-weight: bold;
-            font-size: 12px;
+            font-size: 11px;
+            text-transform: uppercase;
             cursor: pointer;
             white-space: nowrap;
         }
@@ -60,61 +55,61 @@
         nav button.active {
             color: #fff;
             background: var(--primary);
-            border-bottom: 3px solid var(--accent);
         }
 
-        section { display: none; padding: 10px; }
+        section { display: none; padding: 8px; }
         section.active { display: block; }
 
-        /* Container bảng để cuộn ngang trên mobile */
+        /* Bảng hiển thị vừa vặn màn hình */
         .table-wrapper {
             background: white;
             border-radius: 4px;
-            overflow-x: auto;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            overflow: hidden; /* Không cho tràn */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
         table {
-            width: 100%;
+            width: 100%; /* Ép bảng luôn nằm trong màn hình */
             border-collapse: collapse;
-            table-layout: fixed; /* Ép cố định tỷ lệ cột */
-            min-width: 450px; /* Đảm bảo không quá nhỏ trên mobile */
+            table-layout: auto; 
         }
 
         th, td {
             border: 1px solid #ddd;
-            padding: 8px 4px;
-            text-align: center;
-            font-size: 13px;
-            word-wrap: break-word;
+            padding: 6px 2px; /* Giảm padding tối đa */
+            text-align: center; /* Căn giữa nội dung */
+            vertical-align: middle;
+            font-size: 12px; /* Font nhỏ để vừa màn hình mobile */
+            word-break: break-word; /* Tự xuống dòng nếu nội dung quá dài */
         }
 
         th {
-            background: #f8f9fa;
+            background: #eee;
+            color: #000;
             font-weight: bold;
-            color: #444;
-            font-size: 11px;
-            text-transform: uppercase;
+            font-size: 10px;
         }
 
-        /* Định dạng riêng cho trang MATCHES để cân đối */
-        #MATCHES-table th:nth-child(1), #MATCHES-table td:nth-child(1) { width: 35px; } /* Ngày */
-        #MATCHES-table th:nth-child(2), #MATCHES-table td:nth-child(2) { width: 35px; } /* Tháng */
-        #MATCHES-table th:nth-child(3), #MATCHES-table td:nth-child(3) { width: 50px; } /* Năm */
-        #MATCHES-table th:nth-child(4), #MATCHES-table td:nth-child(4) { width: 35%; text-align: left; padding-left: 8px; } /* Team 1 */
-        #MATCHES-table th:nth-child(5), #MATCHES-table td:nth-child(5) { width: 40px; background: #fffde7; font-weight: bold; } /* Tỷ số 1 */
-        #MATCHES-table th:nth-child(6), #MATCHES-table td:nth-child(6) { width: 40px; background: #fffde7; font-weight: bold; } /* Tỷ số 2 */
-        #MATCHES-table th:nth-child(7), #MATCHES-table td:nth-child(7) { width: 35%; text-align: left; padding-left: 8px; } /* Team 2 */
+        /* Format riêng cho trang MATCHES */
+        .score {
+            font-weight: 800;
+            color: #d32f2f;
+            background: #fffde7 !important;
+            width: 25px; /* Ép cột tỷ số nhỏ lại */
+        }
 
-        .score { color: #d32f2f; font-size: 15px; }
-        .player-name { font-weight: 500; color: #1a237e; }
+        .player-name {
+            font-weight: 500;
+            line-height: 1.2;
+            color: #1a237e;
+        }
 
-        /* Hiệu ứng loading */
-        .loading { text-align: center; padding: 50px; color: #666; font-style: italic; }
+        .loading { text-align: center; padding: 40px; font-style: italic; color: #666; }
 
-        @media (max-width: 480px) {
-            th, td { font-size: 11px; padding: 6px 2px; }
-            header { font-size: 16px; }
+        /* Tối ưu cực độ cho màn hình rất nhỏ */
+        @media (max-width: 380px) {
+            th, td { font-size: 10px; padding: 4px 1px; }
+            header { font-size: 15px; }
         }
     </style>
 </head>
@@ -158,17 +153,20 @@ async function loadSheet(sheetName, targetId) {
         const rows = json.table.rows;
         const cols = json.table.cols;
 
-        let html = `<div class="table-wrapper"><table id="${targetId}-table"><thead><tr>`;
+        let html = `<div class="table-wrapper"><table><thead><tr>`;
         
-        // Header xử lý thông minh: lấy label hoặc lấy mặc định nếu trống
+        // Header
         for(let i=0; i < cols.length; i++) {
             let label = cols[i].label ? cols[i].label : "";
+            // Rút gọn tiêu đề nếu cần để tiết kiệm diện tích mobile
+            if(label === "NGÀY") label = "N";
+            if(label === "THÁNG") label = "T";
+            if(label === "NĂM") label = "Năm";
             html += `<th>${label}</th>`;
         }
         html += `</tr></thead><tbody>`;
 
         rows.forEach(row => {
-            // Bỏ qua dòng nếu tất cả các ô đều trống
             if (!row.c.some(cell => cell && cell.v !== null)) return;
 
             html += `<tr>`;
@@ -179,7 +177,6 @@ async function loadSheet(sheetName, targetId) {
                     val = cell.f ? cell.f : (cell.v !== null ? cell.v : "");
                 }
 
-                // Thêm class đặc biệt cho trang MATCHES để format đẹp
                 let className = "";
                 if (targetId === "MATCHES") {
                     if (i === 4 || i === 5) className = "score";
@@ -194,11 +191,10 @@ async function loadSheet(sheetName, targetId) {
         html += `</tbody></table></div>`;
         document.getElementById(targetId).innerHTML = html;
     } catch (err) {
-        document.getElementById(targetId).innerHTML = "Lỗi tải dữ liệu. Hãy kiểm tra kết nối.";
+        document.getElementById(targetId).innerHTML = "Lỗi tải dữ liệu.";
     }
 }
 
-// Chạy tải dữ liệu khi mở trang
 window.addEventListener('DOMContentLoaded', () => {
     loadSheet("BXH", "BXH");
     loadSheet("MATCHES", "MATCHES");
