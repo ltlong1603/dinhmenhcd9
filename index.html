@@ -28,11 +28,10 @@
         .table-wrapper { background: white; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); overflow: hidden; }
         table { width: 100%; border-collapse: collapse; table-layout: fixed; }
         
-        th, td { border: 1px solid #ccc; padding: 6px 2px; text-align: center; font-size: 12px; word-wrap: break-word; overflow: hidden; }
+        th, td { border: 1px solid #ccc; padding: 6px 2px; text-align: center; font-size: 11px; word-wrap: break-word; overflow: hidden; }
         th { background: #e8f5e9; font-weight: bold; }
         .head-col { background: #e8f5e9; font-weight: bold; }
 
-        /* BXH tối ưu cột */
         .bxh-table th:nth-child(1) { width: 10%; }
         .bxh-table th:nth-child(2) { width: 20%; }
         .bxh-table th:nth-child(3), .bxh-table th:nth-child(4), 
@@ -62,12 +61,6 @@
         .filter-container { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; padding: 10px; background: white; border-radius: 8px; }
         .filter-btn { padding: 6px 12px; border: 1.5px solid var(--primary); background: white; color: var(--primary); font-weight: bold; border-radius: 20px; cursor: pointer; font-size: 11px; }
         .filter-btn.active { background: var(--primary); color: white; }
-
-        @media (max-width: 380px) {
-            th, td { font-size: 10px; padding: 4px 1px; }
-            .cell-full, .cell-none, .cell-missing { font-size: 9px !important; }
-            .team-box { font-size: 12px; }
-        }
     </style>
 </head>
 <body>
@@ -105,17 +98,17 @@ async function loadSheet(sheetName, targetId) {
         const rows = json.table.rows;
 
         if (sheetName === "MATCHES") {
-            // Lọc hàng trống
             allMatches = rows.filter(row => row.c && row.c[0] && row.c[0].v !== null);
             
-            // LOGIC SẮP XẾP MỚI: 
+            // SỬA LẠI LOGIC SORT TRIỆT ĐỂ
             allMatches.sort((a, b) => {
-                // Lấy giá trị Năm (c[2]), Tháng (c[1]), Ngày (c[0])
-                // Trong Google Sheet gviz, Tháng thường bắt đầu từ 0 nếu là đối tượng Date, 
-                // nhưng nếu là số thuần túy thì ta trừ 1 cho đúng chuẩn JS Date.
-                const valA = new Date(a.c[2].v, a.c[1].v - 1, a.c[0].v).getTime();
-                const valB = new Date(b.c[2].v, b.c[1].v - 1, b.c[0].v).getTime();
-                return valB - valA; // Giảm dần: To hơn (mới hơn) lên trước
+                const getVal = (row) => {
+                    const d = parseInt(row.c[0]?.v || 0);
+                    const m = parseInt(row.c[1]?.v || 0);
+                    const y = parseInt(row.c[2]?.v || 0);
+                    return new Date(y, m - 1, d).getTime();
+                };
+                return getVal(b) - getVal(a);
             });
 
             renderCards(allMatches, "MATCHES", "ALL");
@@ -127,7 +120,7 @@ async function loadSheet(sheetName, targetId) {
         } else {
             renderStandardTable(json.table, targetId);
         }
-    } catch (e) { console.error("Lỗi tải sheet:", e); }
+    } catch (e) { console.error(e); }
 }
 
 function renderBXHTable(table, targetId) {
@@ -167,11 +160,9 @@ function renderMatrixPairs(table, targetId) {
 function renderCards(rows, targetId, selectedTeam) {
     let html = "";
     rows.forEach(row => {
-        // Hiển thị ngày theo format VN
         const d = `${row.c[0]?.v}/${row.c[1]?.v}/${row.c[2]?.v}`;
         const t1 = String(row.c[3]?.v || ""), t2 = String(row.c[6]?.v || "");
         const s1 = row.c[4]?.v ?? "-", s2 = row.c[5]?.v ?? "-";
-        
         let badge = "", badgeCls = "";
         if (selectedTeam !== "ALL" && s1 !== "-" && s2 !== "-") {
             const isT1 = t1.includes(selectedTeam);
@@ -179,20 +170,17 @@ function renderCards(rows, targetId, selectedTeam) {
             else if ((isT1 && s1 > s2) || (!isT1 && s2 > s1)) { badge = "THẮNG"; badgeCls = "win-badge"; }
             else { badge = "THUA"; badgeCls = "lose-badge"; }
         }
-        
-        html += `
-            <div class="match-card" style="border-top-color: ${badge === 'THẮNG' ? 'var(--win)' : badge === 'THUA' ? 'var(--lose)' : '#ddd'}">
-                <div class="match-date">${d}</div>
-                <div class="match-main">
-                    <div class="team-box">${t1}</div>
-                    <div class="score-display"><div class="score-box">${s1}</div><div class="score-dash">-</div><div class="score-box">${s2}</div></div>
-                    <div class="team-box">${t2}</div>
-                </div>
-                ${badge ? `<div class="result-badge ${badgeCls}">${badge}</div>` : ''}
+        html += `<div class="match-card" style="border-top-color: ${badge === 'THẮNG' ? 'var(--win)' : badge === 'THUA' ? 'var(--lose)' : '#ddd'}">
+            <div class="match-date">${d}</div>
+            <div class="match-main">
+                <div class="team-box">${t1}</div>
+                <div class="score-display"><div class="score-box">${s1}</div><div class="score-dash">-</div><div class="score-box">${s2}</div></div>
+                <div class="team-box">${t2}</div>
             </div>
-        `;
+            ${badge ? `<div class="result-badge ${badgeCls}">${badge}</div>` : ''}
+        </div>`;
     });
-    document.getElementById(targetId).innerHTML = html || "<p style='text-align:center; padding:20px;'>Không có dữ liệu</p>";
+    document.getElementById(targetId).innerHTML = html;
 }
 
 function filterMatches(team, btn) {
