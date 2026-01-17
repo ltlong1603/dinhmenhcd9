@@ -32,11 +32,12 @@
         th { background: #e8f5e9; font-weight: bold; }
         .head-col { background: #e8f5e9; font-weight: bold; }
 
-        .bxh-table th:nth-child(1) { width: 8%; }
-        .bxh-table th:nth-child(2) { width: 22%; }
+        /* BXH tối ưu cột */
+        .bxh-table th:nth-child(1) { width: 10%; }
+        .bxh-table th:nth-child(2) { width: 20%; }
         .bxh-table th:nth-child(3), .bxh-table th:nth-child(4), 
-        .bxh-table th:nth-child(5), .bxh-table th:nth-child(6) { width: 12.5%; }
-        .bxh-table th:nth-child(7), .bxh-table th:nth-child(8) { width: 15%; }
+        .bxh-table th:nth-child(5), .bxh-table th:nth-child(6) { width: 11%; }
+        .bxh-table th:nth-child(7), .bxh-table th:nth-child(8) { width: 13%; }
 
         .cell-full { background-color: var(--win-bg) !important; color: var(--win) !important; font-weight: bold; font-size: 10px !important; }
         .cell-none { background-color: var(--lose-bg) !important; color: var(--lose) !important; font-weight: bold; font-size: 10px !important; }
@@ -104,13 +105,19 @@ async function loadSheet(sheetName, targetId) {
         const rows = json.table.rows;
 
         if (sheetName === "MATCHES") {
-            // Lọc hàng trống và SẮP XẾP NGÀY GIẢM DẦN (Mới nhất lên đầu)
-            allMatches = rows.filter(row => row.c && row.c.some(cell => cell && cell.v !== null));
+            // Lọc hàng trống
+            allMatches = rows.filter(row => row.c && row.c[0] && row.c[0].v !== null);
+            
+            // LOGIC SẮP XẾP MỚI: 
             allMatches.sort((a, b) => {
-                const dateA = new Date(a.c[2]?.v, a.c[1]?.v - 1, a.c[0]?.v);
-                const dateB = new Date(b.c[2]?.v, b.c[1]?.v - 1, b.c[0]?.v);
-                return dateB - dateA;
+                // Lấy giá trị Năm (c[2]), Tháng (c[1]), Ngày (c[0])
+                // Trong Google Sheet gviz, Tháng thường bắt đầu từ 0 nếu là đối tượng Date, 
+                // nhưng nếu là số thuần túy thì ta trừ 1 cho đúng chuẩn JS Date.
+                const valA = new Date(a.c[2].v, a.c[1].v - 1, a.c[0].v).getTime();
+                const valB = new Date(b.c[2].v, b.c[1].v - 1, b.c[0].v).getTime();
+                return valB - valA; // Giảm dần: To hơn (mới hơn) lên trước
             });
+
             renderCards(allMatches, "MATCHES", "ALL");
             renderCards(allMatches, "CHECK_RESULT", "ALL");
         } else if (sheetName === "PAIRS") {
@@ -120,7 +127,7 @@ async function loadSheet(sheetName, targetId) {
         } else {
             renderStandardTable(json.table, targetId);
         }
-    } catch (e) { console.error(e); }
+    } catch (e) { console.error("Lỗi tải sheet:", e); }
 }
 
 function renderBXHTable(table, targetId) {
@@ -160,9 +167,11 @@ function renderMatrixPairs(table, targetId) {
 function renderCards(rows, targetId, selectedTeam) {
     let html = "";
     rows.forEach(row => {
-        const d = `${row.c[0]?.v || ''}/${row.c[1]?.v || ''}/${row.c[2]?.v || ''}`;
+        // Hiển thị ngày theo format VN
+        const d = `${row.c[0]?.v}/${row.c[1]?.v}/${row.c[2]?.v}`;
         const t1 = String(row.c[3]?.v || ""), t2 = String(row.c[6]?.v || "");
         const s1 = row.c[4]?.v ?? "-", s2 = row.c[5]?.v ?? "-";
+        
         let badge = "", badgeCls = "";
         if (selectedTeam !== "ALL" && s1 !== "-" && s2 !== "-") {
             const isT1 = t1.includes(selectedTeam);
@@ -170,6 +179,7 @@ function renderCards(rows, targetId, selectedTeam) {
             else if ((isT1 && s1 > s2) || (!isT1 && s2 > s1)) { badge = "THẮNG"; badgeCls = "win-badge"; }
             else { badge = "THUA"; badgeCls = "lose-badge"; }
         }
+        
         html += `
             <div class="match-card" style="border-top-color: ${badge === 'THẮNG' ? 'var(--win)' : badge === 'THUA' ? 'var(--lose)' : '#ddd'}">
                 <div class="match-date">${d}</div>
@@ -182,7 +192,7 @@ function renderCards(rows, targetId, selectedTeam) {
             </div>
         `;
     });
-    document.getElementById(targetId).innerHTML = html;
+    document.getElementById(targetId).innerHTML = html || "<p style='text-align:center; padding:20px;'>Không có dữ liệu</p>";
 }
 
 function filterMatches(team, btn) {
