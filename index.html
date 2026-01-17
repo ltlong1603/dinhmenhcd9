@@ -7,257 +7,93 @@
     <style>
         :root {
             --primary: #1b5e20;
-            --primary-light: #4caf50;
             --accent: #ffff00;
             --dark: #121212;
-            --bg: #f0f2f5; /* Nền xám nhạt */
-            --text-dark: #333;
-            --win-color: #2e7d32; /* Xanh lá đậm */
-            --lose-color: #c62828; /* Đỏ đậm */
-            --draw-color: #757575; /* Xám */
-            --shadow-light: 0 2px 5px rgba(0,0,0,0.1);
-            --shadow-medium: 0 4px 10px rgba(0,0,0,0.15);
+            --bg: #f4f4f4;
+            --win: #2e7d32;
+            --lose: #d32f2f;
+            --draw: #757575;
         }
 
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: var(--bg);
-            color: var(--text-dark);
-            line-height: 1.5;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        header {
-            background: var(--dark);
-            color: var(--accent);
-            text-align: center;
-            padding: 20px 0;
-            font-size: 24px;
-            font-weight: 900;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            border-bottom: 4px solid var(--primary);
-            position: sticky;
-            top: 0;
-            z-index: 2000;
-            box-shadow: var(--shadow-medium);
-        }
-
-        .section-title {
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            color: white;
-            padding: 12px 15px;
-            margin-top: 25px;
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 17px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: sticky;
-            top: 72px; /* Dưới header */
-            z-index: 1000;
-            box-shadow: var(--shadow-light);
-            border-radius: 8px 8px 0 0;
-            gap: 8px; /* Khoảng cách icon và chữ */
-        }
-        .section-title:first-of-type { border-radius: 0; } /* Header đầu tiên không bo góc trên */
-
-
-        .container {
-            padding: 10px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        /* --- Table styles (for BXH, TEAMS, PAIRS, CHECK tab table) --- */
-        .table-wrapper {
-            background: white;
-            margin-bottom: 15px;
-            border-radius: 0 0 8px 8px;
-            overflow-x: auto;
-            box-shadow: var(--shadow-light);
-            border-top: 1px solid #eee; /* Đường kẻ dưới tiêu đề section */
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            table-layout: auto; /* Tự động co giãn theo nội dung */
-            min-width: 400px; /* Đảm bảo không quá nhỏ */
-        }
-
-        th, td {
-            border: 1px solid #e0e0e0;
-            padding: 10px 8px;
-            text-align: center;
-            vertical-align: middle;
-            font-size: 13px;
-            word-wrap: break-word; /* Tự xuống dòng */
-        }
-
-        th {
-            background: #e9ecef;
-            color: #495057;
-            font-weight: 700;
-            font-size: 12px;
-            text-transform: uppercase;
-        }
+        body { margin: 0; font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: #333; }
+        header { background: var(--dark); color: var(--accent); text-align: center; padding: 20px 0; font-size: 22px; font-weight: 900; text-transform: uppercase; border-bottom: 4px solid var(--primary); position: sticky; top: 0; z-index: 2000; }
         
-        tr:nth-child(even) { background-color: #f8f9fa; } /* Zeebra-striping */
-        tr:hover { background-color: #e6f7ff; cursor: pointer; }
+        .section-title { background: var(--primary); color: white; padding: 12px; margin-top: 20px; font-weight: bold; text-transform: uppercase; text-align: center; position: sticky; top: 68px; z-index: 1000; }
+        .container { padding: 10px; max-width: 800px; margin: 0 auto; }
 
+        /* Bảng thường cho BXH, TEAMS, PAIRS */
+        .table-wrapper { background: white; margin-bottom: 10px; overflow-x: auto; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 12px 8px; text-align: center; font-size: 14px; }
+        th { background: #eee; font-weight: bold; }
 
-        /* --- Card Layout for MATCHES & CHECK_RESULT --- */
-        .card-list {
-            padding: 10px 0; /* Khoảng cách trên dưới cho list */
-            background: white;
-            border-radius: 0 0 8px 8px;
-            box-shadow: var(--shadow-light);
-            border-top: 1px solid #eee;
-        }
-
+        /* CARD LAYOUT FIX - Đưa ra giữa */
+        .card-list { display: flex; flex-direction: column; gap: 12px; padding: 10px 0; }
         .match-card {
-            background: #fff;
+            background: white;
             border-radius: 12px;
-            padding: 15px;
-            margin: 0 10px 10px 10px; /* Khoảng cách giữa các card */
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-            border-left: 5px solid #ccc; /* Border trái để hiện trạng thái */
-            transition: transform 0.2s ease-in-out;
-            min-height: 70px; /* Đảm bảo chiều cao tối thiểu */
-        }
-        .match-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.12);
-        }
-
-        .match-card.win { border-left-color: var(--win-color); }
-        .match-card.lose { border-left-color: var(--lose-color); }
-        .match-card.draw { border-left-color: var(--draw-color); }
-        .match-card.pending { border-left-color: #ffc107; } /* Màu vàng cho trận chưa đấu */
-
-
-        .match-date {
-            font-size: 11px;
-            color: #777;
-            text-align: center;
-            margin-bottom: 5px;
-            flex-basis: 100%; /* Chiếm toàn bộ chiều ngang trên mobile */
-        }
-
-        .team-display {
-            flex: 1; /* Chiếm không gian còn lại */
+            padding: 20px 15px;
             display: flex;
             flex-direction: column;
-            align-items: center; /* Căn giữa */
-            text-align: center;
-        }
-        .team-name {
-            font-weight: 600;
-            font-size: 14px;
-            color: var(--text-dark);
-            line-height: 1.2;
-        }
-        .team-name.highlight {
-            color: var(--primary); /* Màu nổi bật cho đội đang lọc */
+            align-items: center; /* Căn giữa toàn bộ */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            position: relative;
+            border-top: 5px solid #ddd;
         }
 
-        .score-display {
+        .match-date { font-size: 12px; color: #888; margin-bottom: 10px; font-weight: bold; }
+        
+        .match-main {
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Căn giữa tên đội và tỷ số */
+            width: 100%;
+            gap: 15px;
+        }
+
+        .team-box { flex: 1; text-align: center; font-weight: 800; font-size: 16px; color: #1a237e; }
+        .team-left { text-align: right; }
+        .team-right { text-align: left; }
+
+        .score-display { display: flex; align-items: center; gap: 5px; }
+        .score-box {
+            background: #000;
+            color: var(--accent);
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 10px;
-            flex-shrink: 0; /* Không co lại */
-        }
-        .score-box {
-            background: var(--dark);
-            color: var(--accent);
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 18px;
+            border-radius: 8px;
+            font-size: 22px;
             font-weight: 900;
-            line-height: 1;
-            box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
         }
-        .score-separator {
-            font-size: 18px;
-            font-weight: 900;
-            color: #666;
-            margin: 0 5px;
-        }
+        .score-dash { font-weight: 900; font-size: 20px; color: #888; }
 
-        /* --- Filter buttons for CHECK --- */
-        .filter-container {
-            display: flex;
-            flex-wrap: wrap; /* Cho phép xuống dòng trên mobile */
-            gap: 8px;
-            justify-content: center;
-            padding: 15px 10px;
-            background: #fff;
-            border-bottom: 1px solid #eee;
-            border-radius: 0 0 8px 8px;
-            box-shadow: var(--shadow-light);
-            margin-top: 0; /* Đính vào section title */
-        }
-        .filter-btn {
-            padding: 8px 18px;
-            border: 2px solid var(--primary);
-            background: #fff;
-            color: var(--primary);
-            font-weight: bold;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            font-size: 13px;
-            text-transform: uppercase;
-        }
-        .filter-btn:hover:not(.active) {
-            background: var(--primary-light);
+        /* Style cho phần CHECK kết quả */
+        .result-badge {
+            margin-top: 15px;
+            padding: 6px 25px;
+            border-radius: 20px;
             color: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            font-weight: 800;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        .filter-btn.active {
-            background: var(--primary);
-            color: #fff;
-            box-shadow: var(--shadow-light);
-        }
+        .win-bg { background: var(--win); box-shadow: 0 4px 10px rgba(46, 125, 50, 0.3); border-top-color: var(--win) !important; }
+        .lose-bg { background: var(--lose); box-shadow: 0 4px 10px rgba(211, 47, 47, 0.3); border-top-color: var(--lose) !important; }
+        .draw-bg { background: var(--draw); border-top-color: var(--draw) !important; }
 
-        .loading {
-            text-align: center;
-            padding: 50px;
-            font-style: italic;
-            color: #888;
-            background: white;
-            border-radius: 0 0 8px 8px;
-            box-shadow: var(--shadow-light);
-        }
-        .empty-message {
-            text-align: center;
-            padding: 20px;
-            color: #555;
-            background: white;
-            border-radius: 0 0 8px 8px;
-            box-shadow: var(--shadow-light);
-        }
+        .filter-container { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding: 15px; background: white; margin-bottom: 2px; border-radius: 8px 8px 0 0; }
+        .filter-btn { padding: 10px 20px; border: 2px solid var(--primary); background: white; color: var(--primary); font-weight: bold; border-radius: 25px; cursor: pointer; transition: 0.2s; }
+        .filter-btn.active { background: var(--primary); color: white; }
 
-        /* Responsive adjustments */
-        @media (max-width: 576px) {
-            header { font-size: 20px; padding: 15px 0; }
-            .section-title { font-size: 15px; top: 60px; padding: 10px; }
-            th, td { font-size: 11px; padding: 8px 4px; }
-            .filter-btn { padding: 6px 12px; font-size: 11px; }
-            .match-card { flex-wrap: wrap; justify-content: center; text-align: center; padding: 12px; }
-            .match-date { flex-basis: 100%; order: -1; margin-bottom: 10px; } /* Ngày lên trên cùng */
-            .team-display { flex-basis: 40%; }
-            .score-display { flex-basis: 20%; margin: 0 5px; }
-            .score-box { font-size: 16px; padding: 6px 10px; }
-            .score-separator { font-size: 16px; margin: 0 3px; }
+        .loading { text-align: center; padding: 40px; font-style: italic; color: #888; }
+
+        @media (max-width: 480px) {
+            .team-box { font-size: 14px; }
+            .score-box { width: 35px; height: 35px; font-size: 18px; }
         }
     </style>
 </head>
@@ -266,28 +102,28 @@
 <header>TENNIS CD9 2026</header>
 
 <div class="container">
-    <section>
-        <div class="section-title">🏆 Bảng Xếp Hạng (BXH)</div>
-        <div id="BXH" class="loading">Đang tải dữ liệu...</div>
+    <section id="sec-BXH">
+        <div class="section-title">🏆 Bảng Xếp Hạng</div>
+        <div id="BXH" class="loading">Đang tải...</div>
     </section>
 
-    <section>
+    <section id="sec-MATCHES">
         <div class="section-title">🎾 Lịch Thi Đấu & Kết Quả</div>
-        <div id="MATCHES" class="loading">Đang tải dữ liệu...</div>
+        <div id="MATCHES" class="card-list"></div>
     </section>
 
-    <section>
+    <section id="sec-PAIRS">
         <div class="section-title">🤝 Danh Sách Cặp Đấu</div>
-        <div id="PAIRS" class="loading">Đang tải dữ liệu...</div>
+        <div id="PAIRS" class="loading">Đang tải...</div>
     </section>
 
-    <section>
+    <section id="sec-TEAMS">
         <div class="section-title">👥 Danh Sách Teams</div>
-        <div id="TEAMS" class="loading">Đang tải dữ liệu...</div>
+        <div id="TEAMS" class="loading">Đang tải...</div>
     </section>
 
-    <section>
-        <div class="section-title">✅ Kiểm Tra Theo Đội</div>
+    <section id="sec-CHECK">
+        <div class="section-title">✅ Kiểm Tra Kết Quả</div>
         <div class="filter-container">
             <button class="filter-btn active" onclick="filterMatches('ALL', this)">Tất cả</button>
             <button class="filter-btn" onclick="filterMatches('D1', this)">D1</button>
@@ -295,43 +131,38 @@
             <button class="filter-btn" onclick="filterMatches('D3', this)">D3</button>
             <button class="filter-btn" onclick="filterMatches('D4', this)">D4</button>
         </div>
-        <div id="CHECK_RESULT" class="loading"></div>
+        <div id="CHECK_RESULT" class="card-list"></div>
     </section>
 </div>
 
 <script>
 const SHEET_ID = "1pak2Yy4rZ3U50rYj2rlfCOkqyDDpnOns";
-let allMatchesData = []; // Lưu trữ dữ liệu gốc MATCHES
+let allMatches = [];
 
 async function loadSheet(sheetName, targetId) {
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
-    
     try {
         const r = await fetch(url);
         const txt = await r.text();
         const json = JSON.parse(txt.substring(47).slice(0, -2));
         const rows = json.table.rows;
-        
+
         if (sheetName === "MATCHES") {
-            allMatchesData = rows.filter(row => row.c && row.c.some(cell => cell && cell.v !== null));
-            renderMatchesAsCards(allMatchesData, "MATCHES", false); // Bảng MATCHES gốc
-            renderMatchesAsCards(allMatchesData, "CHECK_RESULT", true, 'ALL'); // Mặc định bảng CHECK
+            allMatches = rows.filter(row => row.c && row.c.some(cell => cell && cell.v !== null));
+            renderCards(allMatches, "MATCHES", "ALL");
+            renderCards(allMatches, "CHECK_RESULT", "ALL");
         } else {
-            renderSimpleTable(json.table, targetId);
+            renderTable(json.table, targetId);
         }
-    } catch (e) {
-        console.error(`Lỗi tải dữ liệu từ sheet ${sheetName}:`, e);
-        document.getElementById(targetId).innerHTML = `<div class="empty-message">Không tải được dữ liệu. Vui lòng kiểm tra lại Google Sheet.</div>`;
-    }
+    } catch (e) { console.error(e); }
 }
 
-// Render các bảng đơn giản (BXH, TEAMS, PAIRS) dưới dạng bảng HTML truyền thống
-function renderSimpleTable(tableData, targetId) {
+function renderTable(table, targetId) {
     let html = `<div class="table-wrapper"><table><thead><tr>`;
-    tableData.cols.forEach(col => html += `<th>${col.label || ""}</th>`);
+    table.cols.forEach(col => html += `<th>${col.label || ""}</th>`);
     html += `</tr></thead><tbody>`;
-    tableData.rows.forEach(row => {
-        if (!row.c || !row.c.some(c => c && c.v !== null)) return; // Bỏ qua dòng trống
+    table.rows.forEach(row => {
+        if (!row.c || !row.c.some(c => c && c.v !== null)) return;
         html += `<tr>`;
         row.c.forEach(cell => html += `<td>${cell?.f || cell?.v || ""}</td>`);
         html += `</tr>`;
@@ -339,83 +170,56 @@ function renderSimpleTable(tableData, targetId) {
     document.getElementById(targetId).innerHTML = html + `</tbody></table></div>`;
 }
 
-// Render các bảng MATCHES và CHECK dưới dạng thẻ (Card Layout)
-function renderMatchesAsCards(rows, targetId, isCheckMode = false, selectedTeam = 'ALL') {
-    if (rows.length === 0) {
-        document.getElementById(targetId).innerHTML = `<div class="empty-message">Không tìm thấy trận đấu nào.</div>`;
-        return;
-    }
-
-    let cardsHtml = `<div class="card-list">`;
+function renderCards(rows, targetId, selectedTeam) {
+    let html = "";
     rows.forEach(row => {
-        const date = `${row.c[0]?.v || ''}/${row.c[1]?.v || ''}/${row.c[2]?.v || ''}`;
-        const team1Name = String(row.c[3]?.v || "");
-        const score1 = parseInt(row.c[4]?.v) || 0;
-        const score2 = parseInt(row.c[5]?.v) || 0;
-        const team2Name = String(row.c[6]?.v || "");
+        const d = `${row.c[0]?.v || ''}/${row.c[1]?.v || ''}/${row.c[2]?.v || ''}`;
+        const t1 = String(row.c[3]?.v || "");
+        const s1 = row.c[4]?.v !== null ? row.c[4]?.v : "-";
+        const s2 = row.c[5]?.v !== null ? row.c[5]?.v : "-";
+        const t2 = String(row.c[6]?.v || "");
 
-        let cardClass = "";
-        let team1Highlight = "";
-        let team2Highlight = "";
+        let resultLabel = "";
+        let statusClass = "";
 
-        // Xác định kết quả và highlight
-        if (isCheckMode && selectedTeam !== 'ALL') {
-            const isSelectedTeam1 = team1Name.toUpperCase().includes(selectedTeam.toUpperCase());
-            const isSelectedTeam2 = team2Name.toUpperCase().includes(selectedTeam.toUpperCase());
-
-            if (isSelectedTeam1) team1Highlight = "highlight";
-            if (isSelectedTeam2) team2Highlight = "highlight";
-
-            if (score1 === 0 && score2 === 0) {
-                 cardClass = "pending"; // Trận chưa đấu
-            } else if (score1 === score2) {
-                 cardClass = "draw"; // Hòa
-            } else if ((isSelectedTeam1 && score1 > score2) || (isSelectedTeam2 && score2 > score1)) {
-                 cardClass = "win"; // Thắng
-            } else {
-                 cardClass = "lose"; // Thua
-            }
-        } else if (score1 === 0 && score2 === 0) {
-            cardClass = "pending"; // Nếu không ở chế độ check, vẫn đánh dấu pending
+        if (selectedTeam !== "ALL" && s1 !== "-" && s2 !== "-") {
+            const isT1 = t1.includes(selectedTeam);
+            if (s1 == s2) { resultLabel = "HÒA"; statusClass = "draw-bg"; }
+            else if ((isT1 && s1 > s2) || (!isT1 && s2 > s1)) { resultLabel = "THẮNG"; statusClass = "win-bg"; }
+            else { resultLabel = "THUA"; statusClass = "lose-bg"; }
         }
 
-        cardsHtml += `
-            <div class="match-card ${cardClass}">
-                <div class="match-date">${date}</div>
-                <div class="team-display">
-                    <span class="team-name ${team1Highlight}">${team1Name}</span>
+        html += `
+            <div class="match-card ${statusClass}">
+                <div class="match-date">${d}</div>
+                <div class="match-main">
+                    <div class="team-box team-left">${t1}</div>
+                    <div class="score-display">
+                        <div class="score-box">${s1}</div>
+                        <div class="score-dash">-</div>
+                        <div class="score-box">${s2}</div>
+                    </div>
+                    <div class="team-box team-right">${t2}</div>
                 </div>
-                <div class="score-display">
-                    <span class="score-box">${score1}</span>
-                    <span class="score-separator">-</span>
-                    <span class="score-box">${score2}</span>
-                </div>
-                <div class="team-display">
-                    <span class="team-name ${team2Highlight}">${team2Name}</span>
-                </div>
+                ${resultLabel ? `<div class="result-badge ${statusClass}">${resultLabel}</div>` : ''}
             </div>
         `;
     });
-    cardsHtml += `</div>`;
-    document.getElementById(targetId).innerHTML = cardsHtml;
+    document.getElementById(targetId).innerHTML = html || "<p style='text-align:center'>Không có dữ liệu</p>";
 }
 
-// Logic lọc trận đấu khi bấm nút
-function filterMatches(teamCode, btn) {
+function filterMatches(team, btn) {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-
-    const filtered = teamCode === 'ALL' ? allMatchesData : allMatchesData.filter(row => 
-        String(row.c[3]?.v || "").toUpperCase().includes(teamCode.toUpperCase()) || 
-        String(row.c[6]?.v || "").toUpperCase().includes(teamCode.toUpperCase())
+    const filtered = team === 'ALL' ? allMatches : allMatches.filter(row => 
+        String(row.c[3]?.v || "").includes(team) || String(row.c[6]?.v || "").includes(team)
     );
-    renderMatchesAsCards(filtered, "CHECK_RESULT", true, teamCode);
+    renderCards(filtered, "CHECK_RESULT", team);
 }
 
-// Tải tất cả dữ liệu khi trang được load
 window.addEventListener('DOMContentLoaded', () => {
     loadSheet("BXH", "BXH");
-    loadSheet("MATCHES", "MATCHES"); // Quan trọng: MATCHES phải load trước để có dữ liệu cho filter
+    loadSheet("MATCHES", "MATCHES");
     loadSheet("PAIRS", "PAIRS");
     loadSheet("TEAMS", "TEAMS");
 });
