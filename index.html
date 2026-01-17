@@ -13,51 +13,66 @@
             --win: #2e7d32;
             --lose: #d32f2f;
             --draw: #757575;
-            --warning: #fbc02d; /* Màu vàng */
+            --warning: #fbc02d;
         }
 
-        body { margin: 0; font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: #333; overflow-x: hidden; }
-        header { background: var(--dark); color: var(--accent); text-align: center; padding: 15px 0; font-size: 20px; font-weight: 900; text-transform: uppercase; border-bottom: 4px solid var(--primary); position: sticky; top: 0; z-index: 2000; }
+        body { margin: 0; font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: #333; }
+        header { background: var(--dark); color: var(--accent); text-align: center; padding: 15px 0; font-size: 22px; font-weight: 900; text-transform: uppercase; border-bottom: 4px solid var(--primary); position: sticky; top: 0; z-index: 2000; }
         
-        .section-title { background: var(--primary); color: white; padding: 10px; margin-top: 15px; font-weight: bold; text-transform: uppercase; text-align: center; font-size: 15px; position: sticky; top: 58px; z-index: 1000; }
-        .container { padding: 8px; max-width: 100%; box-sizing: border-box; }
+        .section-title { background: var(--primary); color: white; padding: 12px; margin-top: 20px; font-weight: bold; text-transform: uppercase; text-align: center; position: sticky; top: 60px; z-index: 1000; }
+        .container { padding: 10px; max-width: 800px; margin: 0 auto; }
 
-        /* Tối ưu Bảng Xếp Hạng hiển thị vừa màn hình điện thoại */
-        .table-wrapper { background: white; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); overflow: hidden; }
-        .bxh-table { width: 100%; border-collapse: collapse; table-layout: fixed; } /* Ép bảng không tràn */
-        .bxh-table th, .bxh-table td { border: 1px solid #eee; padding: 8px 2px; text-align: center; font-size: 11px; word-wrap: break-word; }
-        .bxh-table th { background: #f8f9fa; font-weight: bold; color: #555; height: 40px; }
-        .bxh-table td { font-weight: 500; }
+        /* Bảng BXH: Giữ tiêu đề cũ, hỗ trợ cuộn ngang trên mobile */
+        .table-scroll { overflow-x: auto; background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; min-width: 500px; } /* Đảm bảo bảng không bị bóp quá nhỏ */
+        th, td { border: 1px solid #ddd; padding: 10px 8px; text-align: center; font-size: 13px; }
+        th { background: #f8f9fa; font-weight: bold; }
 
-        /* Thiết kế bảng PAIRS & TEAMS đẹp hơn */
-        .standard-table { width: 100%; border-collapse: collapse; background: white; }
-        .standard-table th, .standard-table td { border: 1px solid #eee; padding: 12px 8px; text-align: center; font-size: 13px; }
-        .standard-table th { background: #f8f9fa; }
+        /* Bảng Cặp đấu & Teams */
+        .standard-table { min-width: 100%; }
+        .status-full { background-color: var(--win) !important; color: white; font-weight: bold; }
+        .status-none { background-color: var(--lose) !important; color: white; font-weight: bold; }
+        .status-missing { background-color: var(--warning) !important; color: #333; font-weight: bold; }
 
-        /* Màu trạng thái cho bảng Cặp đấu (PAIRS) */
-        .status-full { background-color: var(--win) !important; color: white; font-weight: bold; }   /* Đủ 2 lượt */
-        .status-none { background-color: var(--lose) !important; color: white; font-weight: bold; }  /* Chưa đấu */
-        .status-missing { background-color: var(--warning) !important; color: #333; font-weight: bold; } /* Thiếu lượt */
+        /* Card Layout tối ưu độ cao */
+        .card-list { display: flex; flex-direction: column; gap: 8px; padding: 10px 0; }
+        .match-card {
+            background: white;
+            border-radius: 10px;
+            padding: 12px 10px; /* Thu nhỏ padding */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-top: 4px solid #ddd;
+        }
 
-        /* Card Layout cho Lịch thi đấu */
-        .card-list { display: flex; flex-direction: column; gap: 10px; padding: 5px 0; }
-        .match-card { background: white; border-radius: 10px; padding: 15px 10px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 3px 6px rgba(0,0,0,0.08); border-top: 4px solid #ddd; }
-        .match-date { font-size: 11px; color: #999; margin-bottom: 8px; }
+        .match-date { font-size: 11px; color: #888; margin-bottom: 5px; }
         .match-main { display: flex; align-items: center; justify-content: center; width: 100%; gap: 10px; }
         .team-box { flex: 1; text-align: center; font-weight: 800; font-size: 14px; color: #1a237e; }
         .score-display { display: flex; align-items: center; gap: 4px; }
-        .score-box { background: #000; color: var(--accent); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 18px; font-weight: 900; }
-        .score-dash { font-weight: bold; color: #ccc; }
+        .score-box { background: #000; color: var(--accent); width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 20px; font-weight: 900; }
+        .score-dash { font-weight: bold; color: #888; }
 
-        .filter-container { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; padding: 10px; background: white; border-radius: 8px; margin-bottom: 5px; }
-        .filter-btn { padding: 8px 12px; border: 1.5px solid var(--primary); background: white; color: var(--primary); font-weight: bold; border-radius: 20px; cursor: pointer; font-size: 12px; }
+        /* Badge kết quả ở phần Check giống version trước */
+        .result-badge {
+            margin-top: 8px;
+            padding: 4px 20px;
+            border-radius: 15px;
+            color: white;
+            font-weight: 800;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+        .win-bg { background: var(--win); border-top-color: var(--win) !important; }
+        .lose-bg { background: var(--lose); border-top-color: var(--lose) !important; }
+        .draw-bg { background: var(--draw); border-top-color: var(--draw) !important; }
+
+        .filter-container { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; padding: 15px; background: white; border-radius: 8px; }
+        .filter-btn { padding: 8px 16px; border: 2px solid var(--primary); background: white; color: var(--primary); font-weight: bold; border-radius: 20px; cursor: pointer; font-size: 12px; }
         .filter-btn.active { background: var(--primary); color: white; }
 
-        .loading { text-align: center; padding: 20px; font-size: 13px; color: #999; }
-
-        @media (max-width: 360px) {
-            .bxh-table th, .bxh-table td { font-size: 10px; }
-        }
+        .loading { text-align: center; padding: 30px; color: #888; font-style: italic; }
     </style>
 </head>
 <body>
@@ -67,33 +82,25 @@
 <div class="container">
     <section>
         <div class="section-title">🏆 Bảng Xếp Hạng</div>
-        <div id="BXH" class="table-wrapper">
-            <div class="loading">Đang tải dữ liệu...</div>
-        </div>
+        <div id="BXH" class="table-scroll"><div class="loading">Đang tải...</div></div>
     </section>
 
     <section>
         <div class="section-title">🎾 Lịch Thi Đấu & Kết Quả</div>
-        <div id="MATCHES" class="card-list">
-            <div class="loading">Đang tải dữ liệu...</div>
-        </div>
+        <div id="MATCHES" class="card-list"></div>
     </section>
 
     <section>
         <div class="section-title">🤝 Danh Sách Cặp Đấu</div>
-        <div id="PAIRS" class="table-wrapper">
-            <div class="loading">Đang tải dữ liệu...</div>
-        </div>
+        <div id="PAIRS" class="table-scroll"><div class="loading">Đang tải...</div></div>
     </section>
 
     <section>
         <div class="section-title">👥 Danh Sách Teams</div>
-        <div id="TEAMS" class="table-wrapper">
-            <div class="loading">Đang tải dữ liệu...</div>
-        </div>
+        <div id="TEAMS" class="table-scroll"><div class="loading">Đang tải...</div></div>
     </section>
 
-    <section>
+    <section id="sec-CHECK">
         <div class="section-title">✅ Kiểm Tra Kết Quả</div>
         <div class="filter-container">
             <button class="filter-btn active" onclick="filterMatches('ALL', this)">Tất cả</button>
@@ -122,29 +129,22 @@ async function loadSheet(sheetName, targetId) {
             allMatches = rows.filter(row => row.c && row.c.some(cell => cell && cell.v !== null));
             renderCards(allMatches, "MATCHES", "ALL");
             renderCards(allMatches, "CHECK_RESULT", "ALL");
-        } else if (sheetName === "BXH") {
-            renderBXH(json.table, targetId);
         } else if (sheetName === "PAIRS") {
             renderPairs(json.table, targetId);
         } else {
-            renderStandardTable(json.table, targetId);
+            renderTable(json.table, targetId);
         }
     } catch (e) { console.error(e); }
 }
 
-function renderBXH(table, targetId) {
-    let html = `<table class="bxh-table"><thead><tr>`;
-    // Viết tắt tiêu đề để vừa mobile
-    const headers = ["Stt", "Đội", "Trận", "T", "H", "B", "HS"];
-    headers.forEach(h => html += `<th>${h}</th>`);
+function renderTable(table, targetId) {
+    let html = `<table><thead><tr>`;
+    table.cols.forEach(col => html += `<th>${col.label || ""}</th>`);
     html += `</tr></thead><tbody>`;
     table.rows.forEach(row => {
-        if (!row.c || !row.c[1]) return;
+        if (!row.c || !row.c.some(c => c && c.v !== null)) return;
         html += `<tr>`;
-        for(let i=0; i<7; i++) {
-            let val = row.c[i]?.f || row.c[i]?.v || "0";
-            html += `<td>${val}</td>`;
-        }
+        row.c.forEach(cell => html += `<td>${cell?.f || cell?.v || ""}</td>`);
         html += `</tr>`;
     });
     document.getElementById(targetId).innerHTML = html + `</tbody></table>`;
@@ -158,28 +158,15 @@ function renderPairs(table, targetId) {
         if (!row.c || !row.c[0]) return;
         let statusText = String(row.c[2]?.v || "").trim();
         let statusClass = "";
-        
         if (statusText === "Đủ 2 lượt") statusClass = "status-full";
         else if (statusText === "Chưa đấu") statusClass = "status-none";
         else if (statusText === "Thiếu lượt") statusClass = "status-missing";
 
         html += `<tr>`;
-        html += `<td>${row.c[0]?.v || ""}</td>`;
-        html += `<td>${row.c[1]?.v || ""}</td>`;
-        html += `<td class="${statusClass}">${statusText}</td>`;
-        html += `</tr>`;
-    });
-    document.getElementById(targetId).innerHTML = html + `</tbody></table>`;
-}
-
-function renderStandardTable(table, targetId) {
-    let html = `<table class="standard-table"><thead><tr>`;
-    table.cols.forEach(col => html += `<th>${col.label || ""}</th>`);
-    html += `</tr></thead><tbody>`;
-    table.rows.forEach(row => {
-        if (!row.c || !row.c.some(c => c && c.v !== null)) return;
-        html += `<tr>`;
-        row.c.forEach(cell => html += `<td>${cell?.f || cell?.v || ""}</td>`);
+        row.c.forEach((cell, idx) => {
+            let val = cell?.f || cell?.v || "";
+            html += `<td class="${idx === 2 ? statusClass : ''}">${val}</td>`;
+        });
         html += `</tr>`;
     });
     document.getElementById(targetId).innerHTML = html + `</tbody></table>`;
@@ -188,25 +175,23 @@ function renderStandardTable(table, targetId) {
 function renderCards(rows, targetId, selectedTeam) {
     let html = "";
     rows.forEach(row => {
-        const d = `${row.c[0]?.v || ''}/${row.c[1]?.v || ''}/${row.c[2]?.v || ''}`;
+        const date = `${row.c[0]?.v || ''}/${row.c[1]?.v || ''}/${row.c[2]?.v || ''}`;
         const t1 = String(row.c[3]?.v || "");
         const s1 = row.c[4]?.v !== null ? row.c[4]?.v : "-";
         const s2 = row.c[5]?.v !== null ? row.c[5]?.v : "-";
         const t2 = String(row.c[6]?.v || "");
 
-        let resultLabel = "";
-        let borderClass = "";
-
+        let resultLabel = "", statusClass = "";
         if (selectedTeam !== "ALL" && s1 !== "-" && s2 !== "-") {
             const isT1 = t1.includes(selectedTeam);
-            if (s1 == s2) { resultLabel = "HÒA"; borderClass = "draw-bg"; }
-            else if ((isT1 && s1 > s2) || (!isT1 && s2 > s1)) { resultLabel = "THẮNG"; borderClass = "win-bg"; }
-            else { resultLabel = "THUA"; borderClass = "lose-bg"; }
+            if (s1 == s2) { resultLabel = "HÒA"; statusClass = "draw-bg"; }
+            else if ((isT1 && s1 > s2) || (!isT1 && s2 > s1)) { resultLabel = "THẮNG"; statusClass = "win-bg"; }
+            else { resultLabel = "THUA"; statusClass = "lose-bg"; }
         }
 
         html += `
-            <div class="match-card" style="${resultLabel ? 'border-top-width: 6px;' : ''}">
-                <div class="match-date">${d}</div>
+            <div class="match-card ${statusClass}">
+                <div class="match-date">${date}</div>
                 <div class="match-main">
                     <div class="team-box">${t1}</div>
                     <div class="score-display">
@@ -216,7 +201,7 @@ function renderCards(rows, targetId, selectedTeam) {
                     </div>
                     <div class="team-box">${t2}</div>
                 </div>
-                ${resultLabel ? `<div style="margin-top:10px; font-weight:bold; color:${resultLabel==='THẮNG'?'var(--win)':resultLabel==='THUA'?'var(--lose)':'#777'}">${resultLabel}</div>` : ''}
+                ${resultLabel ? `<div class="result-badge ${statusClass}">${resultLabel}</div>` : ''}
             </div>
         `;
     });
@@ -239,6 +224,5 @@ window.addEventListener('DOMContentLoaded', () => {
     loadSheet("TEAMS", "TEAMS");
 });
 </script>
-
 </body>
 </html>
