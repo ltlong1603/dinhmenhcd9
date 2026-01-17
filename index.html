@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TENNIS ĐỊNH MỆNH CD9 2026</title>
+    <title>TENNIS CD9 2026</title>
     <style>
         :root {
             --primary: #1b5e20;
@@ -25,24 +25,28 @@
         .section-title { background: var(--primary); color: white; padding: 10px; margin-top: 15px; font-weight: bold; text-transform: uppercase; text-align: center; font-size: 14px; position: sticky; top: 54px; z-index: 1000; }
         .container { padding: 5px; max-width: 100%; box-sizing: border-box; }
 
+        /* Ép bảng không cuộn ngang */
         .table-wrapper { background: white; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); overflow: hidden; }
         table { width: 100%; border-collapse: collapse; table-layout: fixed; }
         
-        th, td { border: 1px solid #ccc; padding: 6px 2px; text-align: center; font-size: 11px; word-wrap: break-word; overflow: hidden; }
+        th, td { border: 1px solid #ccc; padding: 6px 2px; text-align: center; font-size: 11px; word-wrap: break-word; }
         th { background: #e8f5e9; font-weight: bold; }
         .head-col { background: #e8f5e9; font-weight: bold; }
 
+        /* BXH tối ưu cột */
         .bxh-table th:nth-child(1) { width: 10%; }
-        .bxh-table th:nth-child(2) { width: 20%; }
+        .bxh-table th:nth-child(2) { width: 22%; }
         .bxh-table th:nth-child(3), .bxh-table th:nth-child(4), 
         .bxh-table th:nth-child(5), .bxh-table th:nth-child(6) { width: 11%; }
-        .bxh-table th:nth-child(7), .bxh-table th:nth-child(8) { width: 13%; }
+        .bxh-table th:nth-child(7), .bxh-table th:nth-child(8) { width: 12%; }
 
+        /* Màu sắc PAIRS */
         .cell-full { background-color: var(--win-bg) !important; color: var(--win) !important; font-weight: bold; font-size: 10px !important; }
         .cell-none { background-color: var(--lose-bg) !important; color: var(--lose) !important; font-weight: bold; font-size: 10px !important; }
         .cell-missing { background-color: var(--warn-bg) !important; color: #a57d00 !important; font-weight: bold; font-size: 10px !important; }
         .cell-empty { background-color: #f0f0f0; }
 
+        /* Card Layout */
         .card-list { display: flex; flex-direction: column; gap: 8px; padding: 5px 0; }
         .match-card {
             background: white; border-radius: 10px; padding: 10px;
@@ -65,7 +69,7 @@
 </head>
 <body>
 
-<header>TENNIS ĐỊNH MỆNH CD9 2026</header>
+<header>TENNIS CD9 2026</header>
 
 <div class="container">
     <section><div class="section-title">🏆 Bảng Xếp Hạng</div><div id="BXH" class="table-wrapper"></div></section>
@@ -98,17 +102,18 @@ async function loadSheet(sheetName, targetId) {
         const rows = json.table.rows;
 
         if (sheetName === "MATCHES") {
+            // Lọc hàng trống dựa trên cột Ngày
             allMatches = rows.filter(row => row.c && row.c[0] && row.c[0].v !== null);
             
-            // SỬA LẠI LOGIC SORT TRIỆT ĐỂ
+            // SẮP XẾP MỚI NHẤT LÊN ĐẦU (Dùng chuỗi YYYYMMDD để ép kiểu số)
             allMatches.sort((a, b) => {
-                const getVal = (row) => {
-                    const d = parseInt(row.c[0]?.v || 0);
-                    const m = parseInt(row.c[1]?.v || 0);
-                    const y = parseInt(row.c[2]?.v || 0);
-                    return new Date(y, m - 1, d).getTime();
+                const getSortValue = (row) => {
+                    const d = String(row.c[0]?.v || "0").padStart(2, '0');
+                    const m = String(row.c[1]?.v || "0").padStart(2, '0');
+                    const y = String(row.c[2]?.v || "2026");
+                    return parseInt(y + m + d); // Trả về số ví dụ 20260118
                 };
-                return getVal(b) - getVal(a);
+                return getSortValue(b) - getSortValue(a);
             });
 
             renderCards(allMatches, "MATCHES", "ALL");
@@ -120,14 +125,19 @@ async function loadSheet(sheetName, targetId) {
         } else {
             renderStandardTable(json.table, targetId);
         }
-    } catch (e) { console.error(e); }
+    } catch (e) { console.error("Lỗi:", e); }
 }
 
 function renderBXHTable(table, targetId) {
     let html = `<table class="bxh-table"><thead><tr>`;
     table.cols.forEach(col => html += `<th>${col.label || ""}</th>`);
     html += `</tr></thead><tbody>`;
-    table.rows.forEach(row => { if (!row.c || !row.c[1]) return; html += `<tr>`; row.c.forEach(cell => html += `<td>${cell?.f || cell?.v || "0"}</td>`); html += `</tr>`; });
+    table.rows.forEach(row => { 
+        if (!row.c || !row.c[1]) return; 
+        html += `<tr>`; 
+        row.c.forEach(cell => html += `<td>${cell?.f || cell?.v || "0"}</td>`); 
+        html += `</tr>`; 
+    });
     document.getElementById(targetId).innerHTML = html + `</tbody></table>`;
 }
 
@@ -135,7 +145,12 @@ function renderStandardTable(table, targetId) {
     let html = `<table><thead><tr>`;
     table.cols.forEach(col => html += `<th>${col.label || ""}</th>`);
     html += `</tr></thead><tbody>`;
-    table.rows.forEach(row => { if (!row.c || !row.c.some(c => c && c.v !== null)) return; html += `<tr>`; row.c.forEach(cell => html += `<td>${cell?.f || cell?.v || ""}</td>`); html += `</tr>`; });
+    table.rows.forEach(row => { 
+        if (!row.c || !row.c.some(c => c && c.v !== null)) return; 
+        html += `<tr>`; 
+        row.c.forEach(cell => html += `<td>${cell?.f || cell?.v || ""}</td>`); 
+        html += `</tr>`; 
+    });
     document.getElementById(targetId).innerHTML = html + `</tbody></table>`;
 }
 
