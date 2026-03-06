@@ -13,7 +13,7 @@
             --win: #2e7d32;
             --lose: #d32f2f;
             --draw: #757575;
-            --warning: #fbc02d;
+            --gold: #FFD700;
             --win-bg: #c8e6c9;
             --lose-bg: #ffcdd2;
             --warn-bg: #fff9c4;
@@ -28,46 +28,56 @@
         .table-wrapper { background: white; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); overflow: hidden; }
         table { width: 100%; border-collapse: collapse; table-layout: fixed; }
         
-        th, td { border: 1px solid #ccc; padding: 6px 2px; text-align: center; font-size: 11px; word-wrap: break-word; }
-        th { background: #e8f5e9; font-weight: bold; }
-        .head-col { background: #e8f5e9; font-weight: bold; }
+        /* BXH MỚI - CHUYÊN NGHIỆP */
+        .bxh-table th { background: #263238; color: white; font-size: 10px; padding: 10px 2px; }
+        .bxh-table td { padding: 12px 2px; font-size: 12px; border-bottom: 1px solid #eee; }
+        .bxh-table tr:nth-child(even) { background-color: #f9f9f9; }
+        .bxh-table td:nth-child(1) { font-weight: bold; color: #666; width: 35px; }
+        .bxh-table td:nth-child(2) { text-align: left; padding-left: 8px; font-weight: 800; color: #1a237e; font-size: 13px; }
+        .bxh-table td:last-child { background: #fff9c4; font-weight: 900; color: #000; font-size: 14px; border-left: 1px solid #ddd; }
+        .bxh-table th:last-child { background: #fbc02d; color: #000; }
+        .top-1 { background-color: #fffde7 !important; }
 
-        .bxh-table th:nth-child(1) { width: 10%; }
-        .bxh-table th:nth-child(2) { width: 22%; }
-        .bxh-table th:nth-child(3), .bxh-table th:nth-child(4), 
-        .bxh-table th:nth-child(5), .bxh-table th:nth-child(6) { width: 11%; }
-        .bxh-table th:nth-child(7), .bxh-table th:nth-child(8) { width: 12%; }
+        /* Style chung cho bảng */
+        .standard-table th, .standard-table td { border: 1px solid #ccc; padding: 6px 2px; text-align: center; font-size: 11px; }
 
+        /* Trạng thái ma trận */
         .cell-full { background-color: var(--win-bg) !important; color: var(--win) !important; font-weight: bold; font-size: 10px !important; }
         .cell-none { background-color: var(--lose-bg) !important; color: var(--lose) !important; font-weight: bold; font-size: 10px !important; }
         .cell-missing { background-color: var(--warn-bg) !important; color: #a57d00 !important; font-weight: bold; font-size: 10px !important; }
         .cell-empty { background-color: #f0f0f0; }
 
+        /* CARD VÀ ANIMATION */
         .card-list { display: flex; flex-direction: column; gap: 8px; padding: 5px 0; }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .match-card {
-            background: white; border-radius: 10px; padding: 10px;
+            background: white; border-radius: 10px; padding: 12px 10px;
             display: flex; flex-direction: column; align-items: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-top: 4px solid #ddd;
+            animation: fadeInUp 0.4s ease forwards; /* Hiệu ứng mượt */
         }
-        .match-date { font-size: 10px; color: #888; margin-bottom: 5px; }
+
+        .match-date { font-size: 10px; color: #888; margin-bottom: 6px; font-weight: bold; }
         .match-main { display: flex; align-items: center; justify-content: center; width: 100%; gap: 5px; }
-        
-        /* Cập nhật Team Box: To hơn và in đậm */
-        .team-box { flex: 1; text-align: center; font-weight: 900; font-size: 17px; color: #1a237e; line-height: 1.2; }
-        
-        /* Class màu sắc cho tên đội */
+        .team-box { flex: 1; text-align: center; font-weight: 900; font-size: 17px; color: #1a237e; line-height: 1.1; }
         .txt-win { color: var(--win) !important; }
         .txt-lose { color: var(--lose) !important; }
+        
+        .score-display { display: flex; align-items: center; gap: 4px; }
+        .score-box { background: #000; color: var(--accent); width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 20px; font-weight: 900; }
 
-        .score-display { display: flex; align-items: center; gap: 3px; }
-        .score-box { background: #000; color: var(--accent); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 18px; font-weight: 900; }
-
-        .result-badge { margin-top: 5px; padding: 3px 12px; border-radius: 12px; color: white; font-weight: 800; font-size: 10px; text-transform: uppercase; }
+        .result-badge { margin-top: 8px; padding: 4px 14px; border-radius: 12px; color: white; font-weight: 800; font-size: 10px; text-transform: uppercase; }
         .win-badge { background: var(--win); } .lose-badge { background: var(--lose); } .draw-badge { background: var(--draw); }
 
-        .filter-container { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; padding: 10px; background: white; border-radius: 8px; }
-        .filter-btn { padding: 6px 12px; border: 1.5px solid var(--primary); background: white; color: var(--primary); font-weight: bold; border-radius: 20px; cursor: pointer; font-size: 11px; }
-        .filter-btn.active { background: var(--primary); color: white; }
+        /* Filter buttons */
+        .filter-container { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; padding: 12px; background: white; border-bottom: 1px solid #ddd; }
+        .filter-btn { padding: 8px 16px; border: 1.5px solid var(--primary); background: white; color: var(--primary); font-weight: bold; border-radius: 20px; cursor: pointer; font-size: 12px; transition: all 0.2s; }
+        .filter-btn.active { background: var(--primary); color: white; transform: scale(1.05); }
     </style>
 </head>
 <body>
@@ -132,17 +142,22 @@ function renderBXHTable(table, targetId) {
     let html = `<table class="bxh-table"><thead><tr>`;
     table.cols.forEach(col => html += `<th>${col.label || ""}</th>`);
     html += `</tr></thead><tbody>`;
-    table.rows.forEach(row => { 
+    table.rows.forEach((row, index) => { 
         if (!row.c || !row.c[1]) return; 
-        html += `<tr>`; 
-        row.c.forEach(cell => html += `<td>${cell?.f || cell?.v || "0"}</td>`); 
+        const isTop1 = index === 0 ? "top-1" : "";
+        html += `<tr class="${isTop1}">`; 
+        row.c.forEach((cell, i) => {
+            let val = cell?.f || cell?.v || "0";
+            if (index === 0 && i === 0) val = "👑";
+            html += `<td>${val}</td>`;
+        });
         html += `</tr>`; 
     });
     document.getElementById(targetId).innerHTML = html + `</tbody></table>`;
 }
 
 function renderStandardTable(table, targetId) {
-    let html = `<table><thead><tr>`;
+    let html = `<table class="standard-table"><thead><tr>`;
     table.cols.forEach(col => html += `<th>${col.label || ""}</th>`);
     html += `</tr></thead><tbody>`;
     table.rows.forEach(row => { 
@@ -155,7 +170,7 @@ function renderStandardTable(table, targetId) {
 }
 
 function renderMatrixPairs(table, targetId) {
-    let html = `<table>`;
+    let html = `<table class="standard-table">`;
     table.rows.forEach((row, rIdx) => {
         html += `<tr>`;
         row.c.forEach((cell, cIdx) => {
@@ -173,14 +188,16 @@ function renderMatrixPairs(table, targetId) {
 }
 
 function renderCards(rows, targetId, selectedTeam) {
+    const container = document.getElementById(targetId);
+    container.innerHTML = ""; // Xóa cũ để kích hoạt animation lại
+    
     let html = "";
-    rows.forEach(row => {
+    rows.forEach((row, index) => {
         const d = `${row.c[0]?.v}/${row.c[1]?.v}/${row.c[2]?.v}`;
         const t1 = String(row.c[3]?.v || ""), t2 = String(row.c[6]?.v || "");
         const s1 = row.c[4]?.v ?? "-";
         const s2 = row.c[5]?.v ?? "-";
         
-        // Xác định màu sắc tên đội dựa trên tỉ số
         let t1Cls = "", t2Cls = "";
         if (s1 !== "-" && s2 !== "-") {
             if (s1 > s2) { t1Cls = "txt-win"; t2Cls = "txt-lose"; }
@@ -195,7 +212,9 @@ function renderCards(rows, targetId, selectedTeam) {
             else { badge = "THUA"; badgeCls = "lose-badge"; }
         }
 
-        html += `<div class="match-card" style="border-top-color: ${badge === 'THẮNG' ? 'var(--win)' : badge === 'THUA' ? 'var(--lose)' : '#ddd'}">
+        // Tạo hiệu ứng delay cho từng card
+        const delay = (index * 0.05).toFixed(2);
+        html += `<div class="match-card" style="border-top-color: ${badge === 'THẮNG' ? 'var(--win)' : badge === 'THUA' ? 'var(--lose)' : '#ddd'}; animation-delay: ${delay}s">
             <div class="match-date">${d}</div>
             <div class="match-main">
                 <div class="team-box ${t1Cls}">${t1}</div>
@@ -205,7 +224,7 @@ function renderCards(rows, targetId, selectedTeam) {
             ${badge ? `<div class="result-badge ${badgeCls}">${badge}</div>` : ''}
         </div>`;
     });
-    document.getElementById(targetId).innerHTML = html;
+    container.innerHTML = html;
 }
 
 function filterMatches(team, btn) {
